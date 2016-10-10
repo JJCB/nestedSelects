@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Skeletor</title>
+    <meta name="description" content="Skeletor">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="bower_components/fancybox/source/jquery.fancybox.css">
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+    <div class="link_modal"><a data-link-modal="#openModal" class="fancybox open_modal">Abrir modal</a></div>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/underscore/underscore.js"></script>
+    <script src="bower_components/parsleyjs/dist/parsley.min.js"></script>
+    <script src="bower_components/fancybox/source/jquery.fancybox.js"></script>
+    <script src="js/script.js"></script>
+  </body>
+</html>
+<script type="text/template" id="openModal">
+  <div id="modal" class="modal_city">
+    <div class="content">
+      <h3 class="title">Seleccione</h3>
+      <div class="content_group">
+        <div class="select_group">
+          <div class="group">
+            <label>Departamento :</label>
+            <select name="depart" class="select_cat">
+              <option value="Seleccion" selected disabled>Selecciona</option>{{ for(i=0;i<dep.length;i++){ }}
+              <option value="{{=dep[i].id_ubigeo}}">{{=dep[i].nombre_ubigeo}}</option>{{ } }}
+            </select>
+          </div>
+          <div class="group">
+            <label>Provincia :</label>
+            <select name="prov" class="select_item">
+              <option selected disabled>Escoge</option>
+            </select>
+          </div>
+          <div class="group">
+            <label>Distrito :</label>
+            <select name="dist" class="select_item">
+              <option selected disabled>Escoge</option>
+            </select>
+          </div>
+        </div>
+        <div class="btn">
+          <div class="btn_add">Agregar</div>
+        </div>
+      </div>
+      <div class="list_add">
+        <h3 class="title">Lista de datos agregados</h3>
+        <ul class="content_list">
+          <li>
+            <div class="depart">Departemento</div>
+            <div class="prov">Provncia</div>
+            <div class="dist">Distrito</div>
+            <div class="edit">Editar</div>
+            <div class="remove">Eliminar</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</script>
+<script type="text/template" id="listProvicia">{{listProv = prov[idprov];}}
+  <option value="Selecciona" selected disabled>Selecciona</option>{{ for(i=0;i<listProv.length;i++){ }}
+  <option value="{{=listProv[i].id_ubigeo}}">{{=listProv[i].nombre_ubigeo}}</option>{{ } }}
+</script>
+<script type="text/template" id="listDistrito">{{listDist = dist[idDist];}}
+  <option value="Selecciona" selected disabled>Selecciona</option>{{ for(i=0;i<listDist.length;i++){ }}
+  <option value="{{=listDist[i].codigo_ubigeo}}">{{=listDist[i].nombre_ubigeo}}</option>{{ } }}
+</script>
+<script type="text/template" id="addDatos"><li><div class='id'></div><div class='depart'>{{=dep}}</div><div class='prov'>{{=prov}}</div><div class='dist'>{{=dist}}</div><div class='edit'>Edit</div><div class='remove'>Eliminar</div></li></script>

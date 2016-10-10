@@ -1,0 +1,73 @@
+doctype
+html(lang=es)
+	head
+		meta(charset="utf-8")
+		title Skeletor
+		meta(name="description",content="Skeletor")
+		meta(name="viewport",content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no")
+		link(rel="stylesheet",href="bower_components/fancybox/source/jquery.fancybox.css")
+		link(rel="stylesheet",href="css/style.css")
+	body
+		.link_modal
+			a.fancybox.open_modal(data-link-modal="#openModal") Abrir modal
+
+
+
+		script(src="bower_components/jquery/dist/jquery.min.js")
+		script(src="bower_components/underscore/underscore.js")
+		script(src="bower_components/parsleyjs/dist/parsley.min.js")
+		script(src="bower_components/fancybox/source/jquery.fancybox.js")
+		script(src="js/script.js")
+
+script(type="text/template" id="openModal")
+	#modal.modal_city
+		.content
+			h3.title
+				| Seleccione
+			.content_group
+				.select_group
+					.group
+						label Departamento :
+						select.select_cat(name="depart")
+							option(value="Seleccion" selected disabled) Selecciona
+							| {{ for(i=0;i<dep.length;i++){ }}
+							option(value="{{=dep[i].id_ubigeo}}") {{=dep[i].nombre_ubigeo}}
+							| {{ } }}
+					.group
+						label Provincia :
+						select.select_item(name="prov")
+							option(selected disabled) Escoge
+					.group
+						label Distrito :
+						select.select_item(name="dist")
+							option(selected disabled) Escoge
+				.btn
+					.btn_add
+						| Agregar
+			
+			.list_add
+				h3.title Lista de datos agregados
+				ul.content_list
+					li
+						div.depart Departemento
+						div.prov Provncia
+						div.dist Distrito
+						div.edit Editar
+						div.remove Eliminar
+
+script(type="text/template" id="listProvicia")
+	| {{listProv = prov[idprov];}}
+	option(value="Selecciona" selected disabled) Selecciona
+	| {{ for(i=0;i<listProv.length;i++){ }}
+	option(value="{{=listProv[i].id_ubigeo}}") {{=listProv[i].nombre_ubigeo}}
+	| {{ } }}
+	
+script(type="text/template" id="listDistrito")
+	| {{listDist = dist[idDist];}}
+	option(value="Selecciona" selected disabled) Selecciona
+	| {{ for(i=0;i<listDist.length;i++){ }}
+	option(value="{{=listDist[i].codigo_ubigeo}}") {{=listDist[i].nombre_ubigeo}}
+	| {{ } }}
+
+script(type="text/template" id="addDatos")
+	| <li><div class='id'></div><div class='depart'>{{=dep}}</div><div class='prov'>{{=prov}}</div><div class='dist'>{{=dist}}</div><div class='edit'>Edit</div><div class='remove'>Eliminar</div></li>

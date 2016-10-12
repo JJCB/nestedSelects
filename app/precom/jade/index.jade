@@ -30,9 +30,6 @@ script(type="text/template" id="openModal")
 						label Departamento :
 						select.select_cat(name="depart")
 							option(value="Seleccion" selected disabled) Selecciona
-							| {{ for(i=0;i<dep.length;i++){ }}
-							option(value="{{=dep[i].id_ubigeo}}") {{=dep[i].nombre_ubigeo}}
-							| {{ } }}
 					.group
 						label Provincia :
 						select.select_item(name="prov")
@@ -44,30 +41,36 @@ script(type="text/template" id="openModal")
 				.btn
 					.btn_add
 						| Agregar
-			
-			.list_add
-				h3.title Lista de datos agregados
-				ul.content_list
-					li
-						div.depart Departemento
-						div.prov Provncia
-						div.dist Distrito
-						div.edit Editar
-						div.remove Eliminar
+					.btn_update
+						| Actualizar	
 
-script(type="text/template" id="listProvicia")
-	| {{listProv = prov[idprov];}}
-	option(value="Selecciona" selected disabled) Selecciona
-	| {{ for(i=0;i<listProv.length;i++){ }}
-	option(value="{{=listProv[i].id_ubigeo}}") {{=listProv[i].nombre_ubigeo}}
-	| {{ } }}
-	
-script(type="text/template" id="listDistrito")
-	| {{listDist = dist[idDist];}}
-	option(value="Selecciona" selected disabled) Selecciona
-	| {{ for(i=0;i<listDist.length;i++){ }}
-	option(value="{{=listDist[i].codigo_ubigeo}}") {{=listDist[i].nombre_ubigeo}}
-	| {{ } }}
+script(type="text/template" id="listSlc")
+	| {{ for(i=0;i<data.length;i++){ }}
+	| {{ if(id == data[i].id_ubigeo) { }}
+	option(value='{{=data[i].id_ubigeo}}' selected){{=data[i].nombre_ubigeo}}
+	| {{
+	| } else {
+	| }}  
+	option(value='{{=data[i].id_ubigeo}}' ){{=data[i].nombre_ubigeo}}
+	| {{
+	| } }
+	| }}	
 
 script(type="text/template" id="addDatos")
-	| <li><div class='id'></div><div class='depart'>{{=dep}}</div><div class='prov'>{{=prov}}</div><div class='dist'>{{=dist}}</div><div class='edit'>Edit</div><div class='remove'>Eliminar</div></li>
+	| {{console.log("data", data.length);}}
+	| {{ var isActive = $(".open_modal").is(".active-list") ? 'active': ''; }}
+	.list_add(class="{{=isActive}}")
+	
+		h3.title Lista de datos agregados
+		ul.content_list
+			li
+				div.depart Departemento
+				div.prov Provncia
+				div.dist Distrito
+				div.edit Editar
+				div.remove Eliminar
+				|{{$.each(data, function(key, value){ }}
+				| <li><div class='id' data-id='{{=key}}'></div><div data-id-dpto='{{=value.dpto.id}}'>{{=value.dpto.name}}</div><div data-id-prov='{{=value.prov.id}}'>{{=value.prov.name}}</div><div data-id-dist='{{=value.dist.id}}'>{{=value.dist.name}}</div><div class='edit'>Edit</div><div class='remove'>Eliminar</div></li>
+				|{{ }); }}
+
+		

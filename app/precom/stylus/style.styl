@@ -7,7 +7,7 @@
 		
 #modal	
 	width 470px
-	padding 2% 5%
+	padding 15px
 	
 	.content
 		h3.title
@@ -43,32 +43,39 @@
 							
 			.btn
 				width 200px
-				.btn_add
+				div
 					width 100px
 					background-color green
 					padding 7px 10px
 					cursor pointer
 					text-align center
 					color white
+					&.btn_update
+						display none
 					
-		.list_add
-			ul
-				li
-					display flex
-					div
-						width 120px
-						text-align left
-						padding 10px 7px
-						&.edit
-							width 50px
-							cursor pointer
-							color green
-							background 
-						&.remove
-							width 50px
-							color red
-							cursor pointer
-						&.id
-							display none
+.list_add
+	display none
+	background red
+	&.active
+		display initial
+	ul
+		padding 0px
+		li
+			display flex
+			div
+				width 120px
+				text-align left
+				padding 10px 7px
+				&.edit
+					width 50px
+					cursor pointer
+					color green
+					background 
+				&.remove
+					width 50px
+					color red
+					cursor pointer
+				&.id
+					display none
 					
 					

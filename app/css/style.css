@@ -3,7 +3,7 @@
 }
 #modal {
   width: 470px;
-  padding: 2% 5%;
+  padding: 15px;
 }
 #modal .content h3.title {
   text-align: center;
@@ -65,7 +65,7 @@
 #modal .content .content_group .btn {
   width: 200px;
 }
-#modal .content .content_group .btn .btn_add {
+#modal .content .content_group .btn div {
   width: 100px;
   background-color: #008000;
   padding: 7px 10px;
@@ -73,7 +73,20 @@
   text-align: center;
   color: #fff;
 }
-#modal .content .list_add ul li {
+#modal .content .content_group .btn div.btn_update {
+  display: none;
+}
+.list_add {
+  display: none;
+  background: #f00;
+}
+.list_add.active {
+  display: initial;
+}
+.list_add ul {
+  padding: 0px;
+}
+.list_add ul li {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -81,21 +94,21 @@
   display: box;
   display: flex;
 }
-#modal .content .list_add ul li div {
+.list_add ul li div {
   width: 120px;
   text-align: left;
   padding: 10px 7px;
 }
-#modal .content .list_add ul li div.edit {
+.list_add ul li div.edit {
   width: 50px;
   cursor: pointer;
   color: #008000;
 }
-#modal .content .list_add ul li div.remove {
+.list_add ul li div.remove {
   width: 50px;
   color: #f00;
   cursor: pointer;
 }
-#modal .content .list_add ul li div.id {
+.list_add ul li div.id {
   display: none;
 }

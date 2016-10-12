@@ -26,8 +26,7 @@
           <div class="group">
             <label>Departamento :</label>
             <select name="depart" class="select_cat">
-              <option value="Seleccion" selected disabled>Selecciona</option>{{ for(i=0;i<dep.length;i++){ }}
-              <option value="{{=dep[i].id_ubigeo}}">{{=dep[i].nombre_ubigeo}}</option>{{ } }}
+              <option value="Seleccion" selected disabled>Selecciona</option>
             </select>
           </div>
           <div class="group">
@@ -45,29 +44,37 @@
         </div>
         <div class="btn">
           <div class="btn_add">Agregar</div>
+          <div class="btn_update">Actualizar	</div>
         </div>
-      </div>
-      <div class="list_add">
-        <h3 class="title">Lista de datos agregados</h3>
-        <ul class="content_list">
-          <li>
-            <div class="depart">Departemento</div>
-            <div class="prov">Provncia</div>
-            <div class="dist">Distrito</div>
-            <div class="edit">Editar</div>
-            <div class="remove">Eliminar</div>
-          </li>
-        </ul>
       </div>
     </div>
   </div>
 </script>
-<script type="text/template" id="listProvicia">{{listProv = prov[idprov];}}
-  <option value="Selecciona" selected disabled>Selecciona</option>{{ for(i=0;i<listProv.length;i++){ }}
-  <option value="{{=listProv[i].id_ubigeo}}">{{=listProv[i].nombre_ubigeo}}</option>{{ } }}
+<script type="text/template" id="listSlc">
+  {{ for(i=0;i<data.length;i++){ }}
+  {{ if(id == data[i].id_ubigeo) { }}
+  <option value="{{=data[i].id_ubigeo}}" selected>{{=data[i].nombre_ubigeo}}</option>{{
+  } else {
+  }}  
+  <option value="{{=data[i].id_ubigeo}}">{{=data[i].nombre_ubigeo}}</option>{{
+  } }
+  }}	
 </script>
-<script type="text/template" id="listDistrito">{{listDist = dist[idDist];}}
-  <option value="Selecciona" selected disabled>Selecciona</option>{{ for(i=0;i<listDist.length;i++){ }}
-  <option value="{{=listDist[i].codigo_ubigeo}}">{{=listDist[i].nombre_ubigeo}}</option>{{ } }}
+<script type="text/template" id="addDatos">
+  {{console.log("data", data.length);}}
+  {{ var isActive = $(".open_modal").is(".active-list") ? 'active': ''; }}
+  <div class="list_add {{=isActive}}">
+    <h3 class="title">Lista de datos agregados</h3>
+    <ul class="content_list">
+      <li>
+        <div class="depart">Departemento</div>
+        <div class="prov">Provncia</div>
+        <div class="dist">Distrito</div>
+        <div class="edit">Editar</div>
+        <div class="remove">Eliminar</div>{{$.each(data, function(key, value){ }}
+        <li><div class='id' data-id='{{=key}}'></div><div data-id-dpto='{{=value.dpto.id}}'>{{=value.dpto.name}}</div><div data-id-prov='{{=value.prov.id}}'>{{=value.prov.name}}</div><div data-id-dist='{{=value.dist.id}}'>{{=value.dist.name}}</div><div class='edit'>Edit</div><div class='remove'>Eliminar</div></li>
+        {{ }); }}
+      </li>
+    </ul>
+  </div>
 </script>
-<script type="text/template" id="addDatos"><li><div class='id'></div><div class='depart'>{{=dep}}</div><div class='prov'>{{=prov}}</div><div class='dist'>{{=dist}}</div><div class='edit'>Edit</div><div class='remove'>Eliminar</div></li></script>

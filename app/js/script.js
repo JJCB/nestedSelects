@@ -20,15 +20,20 @@ var modal = function () {
 		slcProv: "select[name='prov']",
 		slcDist: "select[name='dist']",
 		btnAdd: ".btn_add",
+		btnUpdate: ".btn_update",
 		urlDepart: "http://www.json-generator.com/api/json/get/bYmFFsHmDC?indent=2",
 		urlprov: "http://www.json-generator.com/api/json/get/cpXdelSNki?indent=2",
 		urlDist: "http://www.json-generator.com/api/json/get/cjWbLDrQXS?indent=2",
-		datosList: [],
+		dataList: [],
 		contentList: "#addDatos",
-		findDatos: {
-			depart: null,
-			prov: null,
-			distri: null
+		btnRemove: "li .remove",
+		btnEdit: "li .edit",
+		html: "",
+		id: null,
+		data: {
+			dpto: {},
+			prov: {},
+			dist: {}
 		}
 
 	};
@@ -44,6 +49,9 @@ var modal = function () {
 		dom.slcDist = $(st.slcDist, st.parentModal);
 		dom.btnAdd = $(st.btnAdd, st.parentModal);
 		dom.contentList = $(st.contentList);
+		dom.btnRemove = $(st.btnRemove);
+		dom.btnEdit = $(st.btnEdit);
+		dom.btnUpdate = $(st.btnUpdate);
 	};
 
 	afterCatchDom = function afterCatchDom() {
@@ -60,14 +68,18 @@ var modal = function () {
 	asynSuscribeEvents = function asynSuscribeEvents() {
 		dom.slcDepart.change(events.findprovincia);
 		dom.slcProv.change(events.findDistrito);
-		dom.btnAdd.on("click", events.captureDato);
+		dom.btnAdd.on("click", events.addList);
+
+		dom.btnRemove.on("click", events.removeList);
+		dom.btnEdit.on("click", events.editList);
+		dom.btnUpdate.on("click", events.updateList);
 	};
 
 	events = {
 
 		openModal: function openModal(e) {
 			e.preventDefault();
-			fn.ajaxDepart();
+			fn.renderModal();
 		},
 
 		findprovincia: function findprovincia() {
@@ -78,39 +90,46 @@ var modal = function () {
 			fn.ajaxDist();
 		},
 
-		captureDato: function captureDato() {
-
-			var valorDept = $("select[name='depart'] option:selected").text();
-			var valorprov = $("select[name='prov'] option:selected").text();
-			var valorDis = $("select[name='dist'] option:selected").text();
-
-			if (valorDept == null || valorprov == null || valorDis == null) {
-				console.log("Falta Seleccionar datos");
-			} else {
-				fn.addList(valorDept, valorprov, valorDis);
-			}
-		},
 		removeList: function removeList(e) {
+
 			var $this = $(e.target);
 			var $parent = $this.parent();
+			var id = $parent.children("div").attr("data-id");
+			st.dataList.splice(id, 1);
+
 			$parent.slideUp("slow", function () {
 				$(this).remove();
 			});
 		},
-		searchDato: function searchDato(e) {
-			var $this = $(e.target);
-			findDatos.depart = $this.parent().find(".depart").text();
-			findDatos.prov = $this.parent().find(".prov").text();
-			findDatos.dist = $this.parent().find(".dist").text();
+		addList: function addList() {
 
-			console.log("depart", findDatos.depart);
-			console.log("prov", findDatos.prov);
-			console.log("dist", findDatos.dist);
+			var data = fn.captureData();
+			st.dataList.push(data);
+			fn.arrayList();
+		},
+		editList: function editList(e) {
+			var $this = $(e.target);
+			var $parent = $this.parent();
+			var id = $parent.children("div").attr("data-id");
+
+			st.data = st.dataList[id];
+			st.id = id;
+			fn.editData();
+			dom.btnAdd.hide();
+			dom.btnUpdate.show();
+		},
+
+		updateList: function updateList() {
+			st.dataList[st.id] = fn.captureData();
+			dom.btnAdd.show();
+			dom.btnUpdate.hide();
+			fn.arrayList();
 		}
 	};
 
 	fn = {
 		AfterModal: function AfterModal() {
+			fn.ajaxDepart();
 			asyncatchDom();
 			asynSuscribeEvents();
 		},
@@ -137,35 +156,59 @@ var modal = function () {
 			});
 		},
 
-		successAjaxDepart: function successAjaxDepart(data) {
-			fn.template($(dom.idTpl).html(), { dep: data }, fn.modal);
-		},
+		renderModal: function renderModal() {
 
-		modal: function modal(html) {
-			$.fancybox.open(html, {
-				afterShow: fn.AfterModal
+			fn.template($(dom.idTpl).html(), { data: {} }, function (html) {
+				st.html += html;
+				fn.list();
 			});
 		},
 
+		list: function list() {
+
+			fn.template($("#addDatos").html(), { data: st.dataList }, function (html) {
+				st.html += html;
+				fn.modal(st.html);
+				st.html = "";
+			});
+		},
+
+		modal: function modal(html) {
+
+			$.fancybox.open(html, {
+				afterShow: fn.AfterModal,
+				afterClose: fn.cleanData
+			});
+		},
+
+		successAjaxDepart: function successAjaxDepart(data) {
+			console.log("editData", st.data.dpto.id);
+
+			fn.template($("#listSlc").html(), { data: data, id: st.data.dpto.id }, function (html) {
+				$(dom.slcDepart).append(html);
+			});
+		},
 		successAjaxProv: function successAjaxProv(data) {
+
 			var valorOption = dom.slcDepart.val();
-			fn.template($("#listProvicia").html(), { prov: data, idprov: valorOption, search: findDatos.prov }, function (html) {
+			var content = data[valorOption];
+
+			fn.template($("#listSlc").html(), { data: content, id: st.data.prov.id }, function (html) {
 				dom.slcProv.html(html);
 			});
 		},
 
-		searchDato: function searchDato() {
-			var valorDept = $();
-		},
-
 		successAjaxDist: function successAjaxDist(data) {
+
 			var valorOption = dom.slcProv.val();
-			fn.template($("#listDistrito").html(), { dist: data, idDist: valorOption }, function (html) {
+			var content = data[valorOption];
+			fn.template($("#listSlc").html(), { data: content, id: st.data.dist.id }, function (html) {
 				dom.slcDist.html(html);
 			});
 		},
 
 		template: function template(tpl, data, fn) {
+
 			var html = _.template(tpl, data);
 
 			if (fn != undefined) {
@@ -173,14 +216,58 @@ var modal = function () {
 			}
 		},
 
-		addList: function addList(dep, prov, dist) {
+		arrayList: function arrayList() {
 
-			var li = _.template($("#addDatos").html(), { dep: dep, prov: prov, dist: dist });
+			dom.linkModal.addClass("active-list");
+			$(".list_add ").remove();
+			var li = _.template($("#addDatos").html(), { data: st.dataList });
 			var $li = $(li);
 			$li.on("click", ".remove", events.removeList);
-			$li.on("click", ".edit", events.searchDato);
-			$("ul.content_list").append($li);
+			$li.on("click", ".edit", events.editList);
+			$("#modal").append($li);
+		},
+		captureData: function captureData() {
+
+			return {
+				dpto: {
+					id: dom.slcDepart.val(),
+					name: $("select[name='depart'] option:selected").text()
+				},
+				prov: {
+					id: dom.slcProv.val(),
+					name: $("select[name='prov'] option:selected").text()
+				},
+				dist: {
+					id: dom.slcDist.val(),
+					name: $("select[name='dist'] option:selected").text()
+				}
+			};
+		},
+		cleanData: function cleanData() {
+			st.id = null;
+			st.data = {
+				dpto: {
+					id: null,
+					name: null
+				},
+				prov: {
+					id: null,
+					name: null
+				},
+				dist: {
+					id: null,
+					name: null
+				}
+			};
+			console.log(st.data);
+		},
+		editData: function editData() {
+
+			fn.ajaxDepart();
+			fn.ajaxProv();
+			fn.ajaxDist();
 		}
+
 	};
 
 	initialize = function initialize() {
@@ -195,3 +282,24 @@ var modal = function () {
 }();
 
 modal.init();
+
+// render:template (view)
+// list(array)
+// add({})
+// delete(id)
+// update(id,)
+
+
+// json:bdd
+// list(array)
+// add({})
+// delete(id)
+// update(id, {})
+
+
+/*data[key]
+{
+	pro: 4545,
+	prov: 456456,
+	dis: 454654
+}*/

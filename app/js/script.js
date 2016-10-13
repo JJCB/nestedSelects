@@ -84,6 +84,7 @@ var modal = function () {
 
 		findprovincia: function findprovincia() {
 			fn.ajaxProv();
+			fn.cleanSlcDist();
 		},
 
 		findDistrito: function findDistrito() {
@@ -92,14 +93,21 @@ var modal = function () {
 
 		removeList: function removeList(e) {
 
-			var $this = $(e.target);
-			var $parent = $this.parent();
-			var id = $parent.children("div").attr("data-id");
+			var id = $(e.target).children("div").attr("data-id");
 			st.dataList.splice(id, 1);
 
-			$parent.slideUp("slow", function () {
+			$(e.target).parent().slideUp("slow", function () {
+
 				$(this).remove();
+				if (st.dataList.length == 0) {
+					$(".list_add").slideUp();
+					console.log("Data List");
+				}
+				fn.arrayList();
 			});
+			$("ul li").removeClass("active");
+			st.id = null;
+			fn.changeAdd();
 		},
 		addList: function addList() {
 
@@ -108,15 +116,12 @@ var modal = function () {
 			fn.arrayList();
 		},
 		editList: function editList(e) {
-			var $this = $(e.target);
-			var $parent = $this.parent();
-			var id = $parent.children("div").attr("data-id");
 
-			st.data = st.dataList[id];
-			st.id = id;
+			st.id = $(e.target).parent().children("div").attr("data-id");
+			st.data = st.dataList[st.id];
+			$("ul li").removeClass("active");
+			$(e.target).parent().addClass("active");
 			fn.editData();
-			dom.btnAdd.hide();
-			dom.btnUpdate.show();
 		},
 
 		updateList: function updateList() {
@@ -128,37 +133,10 @@ var modal = function () {
 	};
 
 	fn = {
-		AfterModal: function AfterModal() {
-			fn.ajaxDepart();
-			asyncatchDom();
-			asynSuscribeEvents();
-		},
-
-		ajaxDepart: function ajaxDepart() {
-			$.ajax({
-				url: st.urlDepart,
-				dataType: "json",
-				success: fn.successAjaxDepart
-			});
-		},
-		ajaxProv: function ajaxProv() {
-			$.ajax({
-				url: st.urlprov,
-				dataType: "json",
-				success: fn.successAjaxProv
-			});
-		},
-		ajaxDist: function ajaxDist() {
-			$.ajax({
-				url: st.urlDist,
-				dataType: "json",
-				success: fn.successAjaxDist
-			});
-		},
 
 		renderModal: function renderModal() {
-
 			fn.template($(dom.idTpl).html(), { data: {} }, function (html) {
+
 				st.html += html;
 				fn.list();
 			});
@@ -167,6 +145,7 @@ var modal = function () {
 		list: function list() {
 
 			fn.template($("#addDatos").html(), { data: st.dataList }, function (html) {
+
 				st.html += html;
 				fn.modal(st.html);
 				st.html = "";
@@ -181,29 +160,68 @@ var modal = function () {
 			});
 		},
 
-		successAjaxDepart: function successAjaxDepart(data) {
-			console.log("editData", st.data.dpto.id);
+		AfterModal: function AfterModal() {
+
+			fn.ajaxDepart();
+			asyncatchDom();
+			asynSuscribeEvents();
+		},
+
+		ajaxDepart: function ajaxDepart(callback) {
+			$.ajax({
+				url: st.urlDepart,
+				dataType: "json",
+				success: function success(data) {
+					fn.successAjaxDepart(data, callback);
+				}
+
+			});
+		},
+		ajaxProv: function ajaxProv(callback) {
+			$.ajax({
+				url: st.urlprov,
+				dataType: "json",
+				success: function success(data) {
+					fn.successAjaxProv(data, callback);
+				}
+			});
+		},
+		ajaxDist: function ajaxDist(callback) {
+			$.ajax({
+				url: st.urlDist,
+				dataType: "json",
+				success: function success(data) {
+					fn.successAjaxDist(data, callback);
+				}
+			});
+		},
+
+		successAjaxDepart: function successAjaxDepart(data, callback) {
 
 			fn.template($("#listSlc").html(), { data: data, id: st.data.dpto.id }, function (html) {
 				$(dom.slcDepart).append(html);
+				callback != undefined ? callback(fn.ajaxDist) : '';
 			});
 		},
-		successAjaxProv: function successAjaxProv(data) {
+		successAjaxProv: function successAjaxProv(data, callback) {
 
 			var valorOption = dom.slcDepart.val();
 			var content = data[valorOption];
 
 			fn.template($("#listSlc").html(), { data: content, id: st.data.prov.id }, function (html) {
 				dom.slcProv.html(html);
+				callback != undefined ? callback(fn.changeUpdate) : '';
 			});
 		},
 
-		successAjaxDist: function successAjaxDist(data) {
+		successAjaxDist: function successAjaxDist(data, callback) {
 
 			var valorOption = dom.slcProv.val();
 			var content = data[valorOption];
+
 			fn.template($("#listSlc").html(), { data: content, id: st.data.dist.id }, function (html) {
 				dom.slcDist.html(html);
+				callback != undefined ? callback(fn.changeUpdate) : '';
 			});
 		},
 
@@ -217,11 +235,11 @@ var modal = function () {
 		},
 
 		arrayList: function arrayList() {
-
-			dom.linkModal.addClass("active-list");
+			console.log("lista");
 			$(".list_add ").remove();
 			var li = _.template($("#addDatos").html(), { data: st.dataList });
 			var $li = $(li);
+
 			$li.on("click", ".remove", events.removeList);
 			$li.on("click", ".edit", events.editList);
 			$("#modal").append($li);
@@ -243,6 +261,7 @@ var modal = function () {
 				}
 			};
 		},
+
 		cleanData: function cleanData() {
 			st.id = null;
 			st.data = {
@@ -259,13 +278,25 @@ var modal = function () {
 					name: null
 				}
 			};
-			console.log(st.data);
+		},
+
+		cleanSlcDist: function cleanSlcDist() {
+			dom.slcDist.children("option").remove();
+			dom.slcDist.append("<option selected disabled>Selecciona</option>");
+		},
+
+		changeUpdate: function changeUpdate() {
+
+			dom.btnAdd.hide();
+			dom.btnUpdate.show();
+		},
+
+		changeAdd: function changeAdd() {
+			dom.btnAdd.show();
+			dom.btnUpdate.hide();
 		},
 		editData: function editData() {
-
-			fn.ajaxDepart();
-			fn.ajaxProv();
-			fn.ajaxDist();
+			fn.ajaxDepart(fn.ajaxProv);
 		}
 
 	};
@@ -282,24 +313,3 @@ var modal = function () {
 }();
 
 modal.init();
-
-// render:template (view)
-// list(array)
-// add({})
-// delete(id)
-// update(id,)
-
-
-// json:bdd
-// list(array)
-// add({})
-// delete(id)
-// update(id, {})
-
-
-/*data[key]
-{
-	pro: 4545,
-	prov: 456456,
-	dis: 454654
-}*/

@@ -76,13 +76,6 @@
 #modal .content .content_group .btn div.btn_update {
   display: none;
 }
-.list_add {
-  display: none;
-  background: #f00;
-}
-.list_add.active {
-  display: initial;
-}
 .list_add ul {
   padding: 0px;
 }
@@ -93,6 +86,7 @@
   display: -ms-flexbox;
   display: box;
   display: flex;
+  padding: 0px 5px 0px 1px;
 }
 .list_add ul li div {
   width: 120px;
@@ -111,4 +105,9 @@
 }
 .list_add ul li div.id {
   display: none;
+}
+.list_add ul li.active {
+  background: #ffefd5;
+  border-radius: 4px;
+  border: 1px dashed;
 }

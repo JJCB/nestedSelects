@@ -55,15 +55,13 @@
   {{ if(id == data[i].id_ubigeo) { }}
   <option value="{{=data[i].id_ubigeo}}" selected>{{=data[i].nombre_ubigeo}}</option>{{
   } else {
-  }}  
+  }}
   <option value="{{=data[i].id_ubigeo}}">{{=data[i].nombre_ubigeo}}</option>{{
   } }
-  }}	
+  }}
 </script>
-<script type="text/template" id="addDatos">
-  {{console.log("data", data.length);}}
-  {{ var isActive = $(".open_modal").is(".active-list") ? 'active': ''; }}
-  <div class="list_add {{=isActive}}">
+<script type="text/template" id="addDatos">{{ if(!data.length == 0) { }}
+  <div class="list_add">
     <h3 class="title">Lista de datos agregados</h3>
     <ul class="content_list">
       <li>
@@ -76,5 +74,5 @@
         {{ }); }}
       </li>
     </ul>
-  </div>
+  </div>{{ } }}
 </script>

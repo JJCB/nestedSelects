@@ -47,20 +47,18 @@ script(type="text/template" id="openModal")
 script(type="text/template" id="listSlc")
 	| {{ for(i=0;i<data.length;i++){ }}
 	| {{ if(id == data[i].id_ubigeo) { }}
-	option(value='{{=data[i].id_ubigeo}}' selected){{=data[i].nombre_ubigeo}}
+	option(value='{{=data[i].id_ubigeo}}' selected) {{=data[i].nombre_ubigeo}}
 	| {{
 	| } else {
-	| }}  
-	option(value='{{=data[i].id_ubigeo}}' ){{=data[i].nombre_ubigeo}}
+	| }}
+	option(value='{{=data[i].id_ubigeo}}' ) {{=data[i].nombre_ubigeo}}
 	| {{
 	| } }
-	| }}	
+	| }}
 
 script(type="text/template" id="addDatos")
-	| {{console.log("data", data.length);}}
-	| {{ var isActive = $(".open_modal").is(".active-list") ? 'active': ''; }}
-	.list_add(class="{{=isActive}}")
-	
+	| {{ if(!data.length == 0) { }}
+	.list_add
 		h3.title Lista de datos agregados
 		ul.content_list
 			li
@@ -72,5 +70,4 @@ script(type="text/template" id="addDatos")
 				|{{$.each(data, function(key, value){ }}
 				| <li><div class='id' data-id='{{=key}}'></div><div data-id-dpto='{{=value.dpto.id}}'>{{=value.dpto.name}}</div><div data-id-prov='{{=value.prov.id}}'>{{=value.prov.name}}</div><div data-id-dist='{{=value.dist.id}}'>{{=value.dist.name}}</div><div class='edit'>Edit</div><div class='remove'>Eliminar</div></li>
 				|{{ }); }}
-
-		
+	|{{ } }}

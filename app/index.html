@@ -44,7 +44,8 @@
         </div>
         <div class="btn">
           <div class="btn_add">Agregar</div>
-          <div class="btn_update">Actualizar	</div>
+          <div class="btn_update">Actualizar</div>
+          <div class="btn_loading">Espere...</div>
         </div>
       </div>
     </div>
@@ -68,8 +69,8 @@
         <div class="depart">Departemento</div>
         <div class="prov">Provncia</div>
         <div class="dist">Distrito</div>
-        <div class="edit">Editar</div>
-        <div class="remove">Eliminar</div>{{$.each(data, function(key, value){ }}
+        <div class="editar">Editar</div>
+        <div class="remover">Eliminar</div>{{$.each(data, function(key, value){ }}
         <li><div class='id' data-id='{{=key}}'></div><div data-id-dpto='{{=value.dpto.id}}'>{{=value.dpto.name}}</div><div data-id-prov='{{=value.prov.id}}'>{{=value.prov.name}}</div><div data-id-dist='{{=value.dist.id}}'>{{=value.dist.name}}</div><div class='edit'>Edit</div><div class='remove'>Eliminar</div></li>
         {{ }); }}
       </li>

@@ -75,6 +75,12 @@
 }
 #modal .content .content_group .btn div.btn_update {
   display: none;
+  background-color: #008000;
+}
+#modal .content .content_group .btn div.btn_loading {
+  display: none;
+  background: #606560;
+  cursor: default;
 }
 .list_add ul {
   padding: 0px;
@@ -93,12 +99,14 @@
   text-align: left;
   padding: 10px 7px;
 }
-.list_add ul li div.edit {
+.list_add ul li div.edit,
+.list_add ul li div.editar {
   width: 50px;
   cursor: pointer;
   color: #008000;
 }
-.list_add ul li div.remove {
+.list_add ul li div.remove,
+.list_add ul li div.remover {
   width: 50px;
   color: #f00;
   cursor: pointer;

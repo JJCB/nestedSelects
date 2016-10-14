@@ -19,13 +19,13 @@ let modal = (()=>{
 		slcDist			: "select[name='dist']",
 		btnAdd			: ".btn_add",
 		btnUpdate		: ".btn_update",
+		btnRemove		: "li .remove",
+		btnEdit			: "li .edit",
 		urlDepart		: "http://www.json-generator.com/api/json/get/bYmFFsHmDC?indent=2",
 		urlprov			: "http://www.json-generator.com/api/json/get/cpXdelSNki?indent=2",
 		urlDist			: "http://www.json-generator.com/api/json/get/cjWbLDrQXS?indent=2",
-		dataList		: [],
+		arrayList		: [],
 		contentList 	: "#addDatos",
-		btnRemove		: "li .remove",
-		btnEdit			: "li .edit",
 		html 			: "",
 		id 				: null,
 		data	: {
@@ -66,11 +66,13 @@ let modal = (()=>{
 	asynSuscribeEvents = () =>{
 		dom.slcDepart.change( events.findprovincia);
 		dom.slcProv.change( events.findDistrito);
-		dom.btnAdd.on("click", events.addList);
 
+		dom.btnAdd.on("click", events.addList);
 		dom.btnRemove.on("click", events.removeList);
 		dom.btnEdit.on("click", events.editList);
 		dom.btnUpdate.on("click", events.updateList);
+		$("#modal").on("click",'.remove',events.removeList)
+		$("#modal").on("click",'.edit',events.editList)
 	}
 	
 	events = {
@@ -94,18 +96,16 @@ let modal = (()=>{
 		
 		removeList : (e) => {
 
+			let id 		= $(e.target).parent().children("div").attr("data-id");
 
-			let id 		= $(e.target).children("div").attr("data-id");
-			st.dataList.splice(id, 1);
+			st.arrayList.splice(id, 1);
 
 			$(e.target).parent().slideUp("slow",function(){
 
-				$(this).remove();
-				if(st.dataList.length==0){
+				if(st.arrayList.length==0){
 					$(".list_add").slideUp();
-					console.log("Data List");
 				}
-				fn.arrayList();
+				fn.showList();
 			});
 			$("ul li").removeClass("active");
 			st.id = null;
@@ -117,14 +117,14 @@ let modal = (()=>{
 		addList : () => {
 
 			var data = fn.captureData();
-			st.dataList.push(data);
-			fn.arrayList ();
+			st.arrayList.push(data);
+			fn.showList ();
 			
 		},
 		editList :(e) => {
 
 			st.id 	 	= $(e.target).parent().children("div").attr("data-id");
-			st.data 	= st.dataList[st.id];
+			st.data 	= st.arrayList[st.id];
 			$("ul li").removeClass("active");
 			$(e.target).parent().addClass("active");
 			fn.editData();
@@ -134,10 +134,10 @@ let modal = (()=>{
 		},
 
 		updateList : () =>{
-			st.dataList[st.id] 	= fn.captureData();
+			st.arrayList[st.id] 	= fn.captureData();
 			dom.btnAdd.show();
 			dom.btnUpdate.hide();
-			fn.arrayList ();
+			fn.showList ();
 
 		}
 	}
@@ -155,7 +155,7 @@ let modal = (()=>{
 
 		list : () => {
 
-			fn.template($("#addDatos").html(),{data:st.dataList}, function(html){
+			fn.template($("#addDatos").html(),{data:st.arrayList}, function(html){
 
 				st.html += html;
 				fn.modal(st.html);
@@ -248,16 +248,19 @@ let modal = (()=>{
 			}
 		},
 
-		arrayList : () =>{
-			console.log("lista");
+		showList : () =>{
+
 			$(".list_add ").remove();
-			let li 	= _.template($("#addDatos").html(),{data:st.dataList});
-			let $li = $(li);
+			let li 	= _.template($("#addDatos").html(),{data:st.arrayList});
 
-			$li.on("click",".remove", events.removeList);
-			$li.on("click",".edit", events.editList);
-			$("#modal").append($li);
+			// Hacer prueba con $(documento).on("click",'.clase',evento);
 
+			//let $li = $(li);
+
+			//$li.on("click",".remove", events.removeList);
+
+			//$li.on("click",".edit", events.editList);
+			$("#modal").append(li);
 		},
 		captureData : () =>{
 		
@@ -304,19 +307,27 @@ let modal = (()=>{
 
 			dom.btnAdd.hide();
 			dom.btnUpdate.show();
+			$(".btn_loading").hide();
 		},
 
 		changeAdd :() =>{
+
 			dom.btnAdd.show();
 			dom.btnUpdate.hide();
 		},
+		changeLoading : () => {
+			dom.btnAdd.hide();
+			dom.btnUpdate.hide();
+			$(".btn_loading").show();
+		},
 		editData : () =>{
+			fn.changeLoading();
 			fn.ajaxDepart(fn.ajaxProv);
 		}
 		
 	}
 	
-  initialize = () => {
+  	initialize = () => {
     catchDom();
 	afterCatchDom();
     suscribeEvents();

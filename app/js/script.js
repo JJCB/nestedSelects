@@ -21,13 +21,13 @@ var modal = function () {
 		slcDist: "select[name='dist']",
 		btnAdd: ".btn_add",
 		btnUpdate: ".btn_update",
+		btnRemove: "li .remove",
+		btnEdit: "li .edit",
 		urlDepart: "http://www.json-generator.com/api/json/get/bYmFFsHmDC?indent=2",
 		urlprov: "http://www.json-generator.com/api/json/get/cpXdelSNki?indent=2",
 		urlDist: "http://www.json-generator.com/api/json/get/cjWbLDrQXS?indent=2",
-		dataList: [],
+		arrayList: [],
 		contentList: "#addDatos",
-		btnRemove: "li .remove",
-		btnEdit: "li .edit",
 		html: "",
 		id: null,
 		data: {
@@ -68,11 +68,13 @@ var modal = function () {
 	asynSuscribeEvents = function asynSuscribeEvents() {
 		dom.slcDepart.change(events.findprovincia);
 		dom.slcProv.change(events.findDistrito);
-		dom.btnAdd.on("click", events.addList);
 
+		dom.btnAdd.on("click", events.addList);
 		dom.btnRemove.on("click", events.removeList);
 		dom.btnEdit.on("click", events.editList);
 		dom.btnUpdate.on("click", events.updateList);
+		$("#modal").on("click", '.remove', events.removeList);
+		$("#modal").on("click", '.edit', events.editList);
 	};
 
 	events = {
@@ -93,17 +95,16 @@ var modal = function () {
 
 		removeList: function removeList(e) {
 
-			var id = $(e.target).children("div").attr("data-id");
-			st.dataList.splice(id, 1);
+			var id = $(e.target).parent().children("div").attr("data-id");
+
+			st.arrayList.splice(id, 1);
 
 			$(e.target).parent().slideUp("slow", function () {
 
-				$(this).remove();
-				if (st.dataList.length == 0) {
+				if (st.arrayList.length == 0) {
 					$(".list_add").slideUp();
-					console.log("Data List");
 				}
-				fn.arrayList();
+				fn.showList();
 			});
 			$("ul li").removeClass("active");
 			st.id = null;
@@ -112,23 +113,23 @@ var modal = function () {
 		addList: function addList() {
 
 			var data = fn.captureData();
-			st.dataList.push(data);
-			fn.arrayList();
+			st.arrayList.push(data);
+			fn.showList();
 		},
 		editList: function editList(e) {
 
 			st.id = $(e.target).parent().children("div").attr("data-id");
-			st.data = st.dataList[st.id];
+			st.data = st.arrayList[st.id];
 			$("ul li").removeClass("active");
 			$(e.target).parent().addClass("active");
 			fn.editData();
 		},
 
 		updateList: function updateList() {
-			st.dataList[st.id] = fn.captureData();
+			st.arrayList[st.id] = fn.captureData();
 			dom.btnAdd.show();
 			dom.btnUpdate.hide();
-			fn.arrayList();
+			fn.showList();
 		}
 	};
 
@@ -144,7 +145,7 @@ var modal = function () {
 
 		list: function list() {
 
-			fn.template($("#addDatos").html(), { data: st.dataList }, function (html) {
+			fn.template($("#addDatos").html(), { data: st.arrayList }, function (html) {
 
 				st.html += html;
 				fn.modal(st.html);
@@ -234,15 +235,19 @@ var modal = function () {
 			}
 		},
 
-		arrayList: function arrayList() {
-			console.log("lista");
-			$(".list_add ").remove();
-			var li = _.template($("#addDatos").html(), { data: st.dataList });
-			var $li = $(li);
+		showList: function showList() {
 
-			$li.on("click", ".remove", events.removeList);
-			$li.on("click", ".edit", events.editList);
-			$("#modal").append($li);
+			$(".list_add ").remove();
+			var li = _.template($("#addDatos").html(), { data: st.arrayList });
+
+			// Hacer prueba con $(documento).on("click",'.clase',evento);
+
+			//let $li = $(li);
+
+			//$li.on("click",".remove", events.removeList);
+
+			//$li.on("click",".edit", events.editList);
+			$("#modal").append(li);
 		},
 		captureData: function captureData() {
 
@@ -289,13 +294,21 @@ var modal = function () {
 
 			dom.btnAdd.hide();
 			dom.btnUpdate.show();
+			$(".btn_loading").hide();
 		},
 
 		changeAdd: function changeAdd() {
+
 			dom.btnAdd.show();
 			dom.btnUpdate.hide();
 		},
+		changeLoading: function changeLoading() {
+			dom.btnAdd.hide();
+			dom.btnUpdate.hide();
+			$(".btn_loading").show();
+		},
 		editData: function editData() {
+			fn.changeLoading();
 			fn.ajaxDepart(fn.ajaxProv);
 		}
 

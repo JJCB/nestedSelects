@@ -42,7 +42,10 @@ script(type="text/template" id="openModal")
 					.btn_add
 						| Agregar
 					.btn_update
-						| Actualizar	
+						| Actualizar
+					.btn_loading
+						| Espere...
+
 
 script(type="text/template" id="listSlc")
 	| {{ for(i=0;i<data.length;i++){ }}
@@ -65,8 +68,8 @@ script(type="text/template" id="addDatos")
 				div.depart Departemento
 				div.prov Provncia
 				div.dist Distrito
-				div.edit Editar
-				div.remove Eliminar
+				div.editar Editar
+				div.remover Eliminar
 				|{{$.each(data, function(key, value){ }}
 				| <li><div class='id' data-id='{{=key}}'></div><div data-id-dpto='{{=value.dpto.id}}'>{{=value.dpto.name}}</div><div data-id-prov='{{=value.prov.id}}'>{{=value.prov.name}}</div><div data-id-dist='{{=value.dist.id}}'>{{=value.dist.name}}</div><div class='edit'>Edit</div><div class='remove'>Eliminar</div></li>
 				|{{ }); }}

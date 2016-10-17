@@ -19,7 +19,7 @@ var reload = browserSync.reload;
 // Rutas
 var path = {
 	jade : 'app/precom/jade/*.jade',
-	es6 : 'app/precom/es6/*.js',
+	es6 : 'app/precom/es6/**/*.js',
 	stylus : 'app/precom/stylus/*.styl',
 	root : 'app/',
 	rootJs : 'app/js',

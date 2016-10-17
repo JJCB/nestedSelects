@@ -17,7 +17,8 @@
     "fancybox": "~2.1.5",    
     "parsleyjs": "~2.0.3",
     "underscore": "~1.6.0",
-    "jquery": "1.11.1"    
+    "jquery": "1.11.1" ,
+    "yosonjs": "0.0.17-alpha"
   },
   "resolutions":{
     "jquery": "1.11.1"

@@ -6,18 +6,25 @@ html(lang=es)
 		meta(name="description",content="Skeletor")
 		meta(name="viewport",content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no")
 		link(rel="stylesheet",href="bower_components/fancybox/source/jquery.fancybox.css")
+		link(rel="stylesheet",href="bower_components/fancybox/source/jquery.fancybox.css")
 		link(rel="stylesheet",href="css/style.css")
+		
 	body
 		.link_modal
 			a.fancybox.open_modal(data-link-modal="#openModal") Abrir modal
-
-
 
 		script(src="bower_components/jquery/dist/jquery.min.js")
 		script(src="bower_components/underscore/underscore.js")
 		script(src="bower_components/parsleyjs/dist/parsley.min.js")
 		script(src="bower_components/fancybox/source/jquery.fancybox.js")
-		script(src="js/script.js")
+		script(src="bower_components/yosonjs/build/yoson-min.js")
+
+		script(src="js/schema.js")
+		script(src="js/loader.js")
+		script(src="js/home/combo_anidado/combo.js")
+
+		script
+			| var yOSON = {module: "home",controller: "combo_anidado",action: "combo"};
 
 script(type="text/template" id="openModal")
 	#modal.modal_city

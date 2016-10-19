@@ -14,6 +14,7 @@ yOSON.AppCore.addModule("combo", function (Sb) {
 	    initialize = void 0;
 
 	st = {
+
 		linkModal: ".link_modal a",
 		slcDepart: "select[name='depart']",
 		slcProv: "select[name='prov']",
@@ -26,9 +27,8 @@ yOSON.AppCore.addModule("combo", function (Sb) {
 		urlprov: "http://www.json-generator.com/api/json/get/cpXdelSNki?indent=2",
 		urlDist: "http://www.json-generator.com/api/json/get/cjWbLDrQXS?indent=2",
 		arrayList: [],
-		contentList: "#addDatos",
 		html: "",
-		id: null,
+		idArray: null,
 		data: {
 			dpto: {},
 			prov: {},
@@ -46,7 +46,6 @@ yOSON.AppCore.addModule("combo", function (Sb) {
 		dom.slcProv = $(st.slcProv, st.parentModal);
 		dom.slcDist = $(st.slcDist, st.parentModal);
 		dom.btnAdd = $(st.btnAdd, st.parentModal);
-		dom.contentList = $(st.contentList);
 		dom.btnRemove = $(st.btnRemove);
 		dom.btnEdit = $(st.btnEdit);
 		dom.btnUpdate = $(st.btnUpdate);
@@ -64,13 +63,16 @@ yOSON.AppCore.addModule("combo", function (Sb) {
 	};
 
 	asynSuscribeEvents = function asynSuscribeEvents() {
+
 		dom.slcDepart.change(events.findprovincia);
+
 		dom.slcProv.change(events.findDistrito);
 
 		dom.btnAdd.on("click", events.addList);
 		dom.btnRemove.on("click", events.removeList);
 		dom.btnEdit.on("click", events.editList);
 		dom.btnUpdate.on("click", events.updateList);
+
 		$("#modal").on("click", '.remove', events.removeList);
 		$("#modal").on("click", '.edit', events.editList);
 	};
@@ -105,7 +107,7 @@ yOSON.AppCore.addModule("combo", function (Sb) {
 				fn.showList();
 			});
 			$("ul li").removeClass("active");
-			st.id = null;
+			st.idArray = null;
 			fn.changeAdd();
 		},
 		addList: function addList() {
@@ -116,15 +118,15 @@ yOSON.AppCore.addModule("combo", function (Sb) {
 		},
 		editList: function editList(e) {
 
-			st.id = $(e.target).parent().children("div").attr("data-id");
-			st.data = st.arrayList[st.id];
+			st.idArray = $(e.target).parent().children("div").attr("data-id");
+			st.data = st.arrayList[st.idArray];
 			$("ul li").removeClass("active");
 			$(e.target).parent().addClass("active");
 			fn.editData();
 		},
 
 		updateList: function updateList() {
-			st.arrayList[st.id] = fn.captureData();
+			st.arrayList[st.idArray] = fn.captureData();
 			dom.btnAdd.show();
 			dom.btnUpdate.hide();
 			fn.showList();
@@ -137,11 +139,11 @@ yOSON.AppCore.addModule("combo", function (Sb) {
 
 			fn.template($(dom.idTpl).html(), { data: {} }, function (html) {
 				st.html += html;
-				fn.list();
+				fn.dataList();
 			});
 		},
 
-		list: function list() {
+		dataList: function dataList() {
 
 			fn.template($("#addDatos").html(), { data: st.arrayList }, function (html) {
 
@@ -161,6 +163,7 @@ yOSON.AppCore.addModule("combo", function (Sb) {
 				afterClose: fn.cleanData
 
 			};
+
 			var data = Sb.trigger('modal:open', opts);
 		},
 		before: function before() {
@@ -226,7 +229,7 @@ yOSON.AppCore.addModule("combo", function (Sb) {
 			var valorOption = dom.slcProv.val();
 			var content = data[valorOption];
 
-			fn.template($("#listSlc").html(), { data: content, id: st.data.dist.id }, function (html) {
+			fn.template($("#listSlc").html(), { data: content, id: st.data.dist.idArray }, function (html) {
 				dom.slcDist.html(html);
 				callback != undefined ? callback(fn.changeUpdate) : '';
 			});
@@ -270,7 +273,7 @@ yOSON.AppCore.addModule("combo", function (Sb) {
 		},
 
 		cleanData: function cleanData() {
-			st.id = null;
+			st.idArray = null;
 			st.data = {
 				dpto: {
 					id: null,

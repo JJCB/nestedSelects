@@ -1,8 +1,9 @@
+.locked {
+  overflow: hidden;
+}
 .link_modal a {
   cursor: pointer;
-}
-#modal {
-  display: none;
+  color: #f00;
 }
 .modal-fixed {
   position: fixed;
@@ -13,7 +14,7 @@
   bottom: 0;
   background: rgba(0,0,0,0.5);
 }
-.flex {
+.modal-fixed.flex {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -33,21 +34,21 @@
   -webkit-align-items: center;
   align-items: center;
 }
-.modal-wrap {
-  position: relative;
+.modal-fixed .modal-wrap {
   display: table;
-  min-width: 30vw;
-  max-width: 80vw;
-  max-height: 80vh;
-  min-height: 30vh;
   border-radius: 5px;
   padding: 20px;
   background: #fff;
 }
-.modal-wrap .modal-content {
+.modal-fixed .modal-wrap .modal-content {
   position: relative;
+  min-width: 30vw;
+  max-width: 80vw;
+  max-height: 80vh;
+  min-height: 30vh;
+  overflow: auto;
 }
-.modal-wrap span {
+.modal-fixed .modal-wrap span {
   position: absolute;
   z-index: 1100;
   right: -12.5px;

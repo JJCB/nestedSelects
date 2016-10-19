@@ -1,5 +1,4 @@
 yOSON.AppCore.addModule("combo", function(Sb){
-	console.log("modulo");
 	let st              = {},
       dom             = {},      
       events,
@@ -33,7 +32,6 @@ yOSON.AppCore.addModule("combo", function(Sb){
 			prov 	: {},
 			dist 	: {}
 		},
-
 	}
 
 			
@@ -78,13 +76,13 @@ yOSON.AppCore.addModule("combo", function(Sb){
 	
 	events = {
 
-		openModal : (e) => {			
+		openModal : (e) => {
 			e.preventDefault();
 			fn.renderModal();
 
 		},
 
-		findprovincia : () =>{			
+		findprovincia : () =>{
 			fn.ajaxProv();
 			fn.cleanSlcDist();
 
@@ -112,8 +110,6 @@ yOSON.AppCore.addModule("combo", function(Sb){
 			st.id = null;
 			fn.changeAdd();
 			
-			
-
 		},
 		addList : () => {
 
@@ -130,8 +126,6 @@ yOSON.AppCore.addModule("combo", function(Sb){
 			$(e.target).parent().addClass("active");
 			fn.editData();
 
-			
-			
 		},
 
 		updateList : () =>{
@@ -146,8 +140,8 @@ yOSON.AppCore.addModule("combo", function(Sb){
 	fn = {
 
 		renderModal : function(){
-			fn.template($(dom.idTpl).html(),{data : {}} ,function(html){
 
+			fn.template($(dom.idTpl).html(),{data : {}} ,function(html){
 				st.html += html;
 				fn.list();
 
@@ -166,17 +160,26 @@ yOSON.AppCore.addModule("combo", function(Sb){
 
 		modal : (html)=>{
 
-			$.fancybox.open(html,{
-				afterShow	: fn.AfterModal,
-				afterClose  : fn.cleanData
-			});
-		},
+			let opts ={
+				html 		 : html,
+				locked		 : false,
+				afterShow 	 : fn.AfterModal,
+				beforeShow	 : fn.before,
+				afterClose	 : fn.cleanData
 
+			}
+			var data = Sb.trigger('modal:open', opts);
+
+		},
+		before : ()  =>{
+			console.log("before mostrar");
+		},
 		AfterModal : () =>{
 
 			fn.ajaxDepart();
 			asyncatchDom();
 			asynSuscribeEvents();
+
 		},
 
 		ajaxDepart : (callback) => {
@@ -190,6 +193,7 @@ yOSON.AppCore.addModule("combo", function(Sb){
 
 			})	
 		},
+
 		ajaxProv : (callback) => {
 			$.ajax({
 				url			: st.urlprov,
@@ -254,15 +258,12 @@ yOSON.AppCore.addModule("combo", function(Sb){
 			$(".list_add ").remove();
 			let li 	= _.template($("#addDatos").html(),{data:st.arrayList});
 
-			// Hacer prueba con $(documento).on("click",'.clase',evento);
-
-			//let $li = $(li);
-
-			//$li.on("click",".remove", events.removeList);
-
-			//$li.on("click",".edit", events.editList);
 			$("#modal").append(li);
+
+			Sb.trigger('modal:onResize');
+
 		},
+
 		captureData : () =>{
 		
 			return {
@@ -325,115 +326,140 @@ yOSON.AppCore.addModule("combo", function(Sb){
 			fn.changeLoading();
 			fn.ajaxDepart(fn.ajaxProv);
 		}
-		
 	}
-	
   	initialize = () => {
-    catchDom();
-	afterCatchDom();
-    suscribeEvents();
-		
-  };
+    	catchDom();
+		afterCatchDom();
+    	suscribeEvents();
+	};
 	
 	return{
 		init : initialize
-	}
+	};
 },[]);
 		
 
 
 yOSON.AppCore.addModule("modal", function(Sb){
-
-	var st = {},
-	    defaults = {},
-	    dom = {},
-	    events = void 0,
-	    fn = void 0,
-	    catchDom = void 0,
-	    suscribeEvents = void 0,
-	    asyncatchDom = void 0,
-	    asynSuscribeEvents = void 0,
-	    initialize = void 0;
+	
+	let st              = {},
+	 defaults 			= {},
+	 dom             	= {},      
+	 events,
+	 fn,
+	 catchDom,
+	 suscribeEvents,
+	 asyncatchDom,
+	 asynSuscribeEvents,
+	 initialize;
 
 	defaults = {
-		linkModal: ".open_modal",
-		parent: ".modal-fixed",
-		content: ".modal-content",
-		btnClose: ".close",
-		tpl: " <div class='modal-fixed'><div class='modal-wrap'> <div class='modal-content'>asdasdasd</div><span class='close'></span></div></div>",
+		parent		: ".modal-fixed",
+		parentWrap	: ".modal-wrap",
+		content		: ".modal-content",
+		btnClose	: ".close",
+		tpl 		: " <div class='modal-fixed'><div class='modal-wrap'> <div class='modal-content'></div><span class='close'></span></div></div>",
+		settings    : {}
 
-		afterShow: '',
-		afterClose: ''
+	}
+			
+	catchDom = () => {
+		dom.linkModal 	= $(st.linkModal);
+	}
 
-	};
+	asyncatchDom = () => {
+		dom.parent 			= $(st.parent);
+		dom.btnClose 		= $(st.btnClose, st.parent);
+		dom.content 		= $(st.content, st.parent);
+		dom.parentWrap 		= $(st.parentWrap, st.parent);
+	}
 
-	catchDom = function catchDom() {
-		dom.linkModal = $(st.linkModal);
-	};
-
-	asyncatchDom = function asyncatchDom() {
-		dom.parent = $(st.parent);
-		dom.btnClose = $(st.btnClose, st.parent);
-		dom.content = $(st.content, st.parent);
-	};
-
-	suscribeEvents = function suscribeEvents() {
+	suscribeEvents = () => {
 		dom.linkModal.on("click", events.openModal);
-	};
+	}
 
-	asynSuscribeEvents = function asynSuscribeEvents() {
-
+	asynSuscribeEvents = () =>{
 		dom.btnClose.on("click", events.close);
-	};
-
+	}
+	
 	events = {
 
-		openModal: function openModal(e) {
+		openModal : (e) =>{
 
-			$.type(st.afterShow) === "function" ? fn.open(st.afterShow) : fn.open();
+			fn.open(opts) ;
 		},
 
-		close: function close() {
-			$.type(st.afterClose) === "function" ? fn.close(st.afterClose) : fn.close();
+		close 	: () =>{
+			fn.close();
 		}
 
-	};
-
+	}
+	
 	fn = {
+		
+		open : (opts) =>{
 
-		open: function open(callback) {
+			st.settings = opts || {};
 
-			var modal = $(st.tpl).appendTo("body");
-			modal.css({
-				"display": "flex",
-				"justify-content": "center",
-				"align-items": "center"
-			});
+			$.type(st.settings.beforeShow) === "function" ? st.settings.beforeShow(): '';
 
-			var html = $($(".link_modal a").attr("data-href"));
+			fn.showModal();
+			dom.content.append(st.settings.html);
+			fn.modalCss();
+			$.type(st.settings.afterShow) === "function" ? setTimeout(st.settings.afterShow,1): '';
 
+		},
+
+		beforeShow : ()=>{
+
+			let bef = st.settings.beforeShow;
+		},
+
+		showModal : () =>{
+
+			$(st.tpl).appendTo("body");
 			asyncatchDom();
-			dom.content.append(html);
 			asynSuscribeEvents();
 
-			callback != undefined ? fn.callback() : '';
 		},
 
-		close: function close(callback) {
+		modalCss : ()=>{
 
-			dom.parent.remove().hide();
+			dom.parentWrap.css({
+					position:'absolute',
+					left: ($(window).width() - dom.parentWrap.outerWidth())/2,
+					top: ($(window).height() - dom.parentWrap.outerHeight())/2
+			});
 
-			callback != undefined ? fn.callback() : '';
-		}
+			st.settings.locked == true ? $("body").addClass("locked") : console.log("none");
 
-	};
+		},
 
-	initialize = function initialize(opts) {
-		st = $.extend({}, defaults, opts);
+		close : () =>{
+
+			dom.parent.remove();
+			$("body").removeClass("locked")
+			$.type(st.settings.afterClose) === "function" ? setTimeout(st.settings.afterClose,1)  : '' ;
+
+
+		},
+		onResize :() =>{
+			$(window).resize(fn.modalCss);
+			$( window ).trigger("resize");
+		},
+		
+	}
+
+	
+	initialize = () => {
+		st = $.extend({},defaults,{});
 		catchDom();
 		suscribeEvents();
+
+		Sb.events(["modal:open"], fn.open, this);
+		Sb.events(["modal:onResize"], fn.onResize, this);
 	};
-	return {
-		init: initialize
+	return{
+		init : initialize
 	};
-},[]);
+});

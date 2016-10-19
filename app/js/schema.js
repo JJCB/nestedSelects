@@ -13,6 +13,7 @@ var schema = {
                     },
                     'actions':{
                         'index': function(){
+                            //alert("ingreso");
                             yOSON.AppCore.runModule("combo");
                             yOSON.AppCore.runModule("modal");
                         },

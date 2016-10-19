@@ -1,97 +1,99 @@
-"use strict";
-
 yOSON.AppCore.addModule("modal", function(Sb){
-
-	var st = {},
-	    defaults = {},
-	    dom = {},
-	    events = void 0,
-	    fn = void 0,
-	    catchDom = void 0,
-	    suscribeEvents = void 0,
-	    asyncatchDom = void 0,
-	    asynSuscribeEvents = void 0,
-	    initialize = void 0;
+	
+	let st              = {},
+	defaults 			= {},
+      dom             	= {},      
+      events,
+      fn,
+      catchDom,
+      suscribeEvents,
+      asyncatchDom,
+	  asynSuscribeEvents,
+      initialize;
 
 	defaults = {
-		linkModal: ".open_modal",
-		parent: ".modal-fixed",
-		content: ".modal-content",
-		btnClose: ".close",
-		tpl: " <div class='modal-fixed'><div class='modal-wrap'> <div class='modal-content'>asdasdasd</div><span class='close'></span></div></div>",
+		linkModal 	: ".open_modal",
+		parent		: ".modal-fixed",
+		content		: ".modal-content",
+		btnClose	: ".close",
+		tpl 		: " <div class='modal-fixed'><div class='modal-wrap'> <div class='modal-content'>asdasdasd</div><span class='close'></span></div></div>",
+		html		: "",
+		afterShow	: '',
+		afterClose	: ''
 
-		afterShow: '',
-		afterClose: ''
+	}
+			
+	catchDom = () => {
+		dom.linkModal 	= $(st.linkModal);
+	}
 
-	};
+	asyncatchDom = () => {
+		dom.parent 			= $(st.parent);
+		dom.btnClose 		= $(st.btnClose, st.parent);
+		dom.content 		= $(st.content, st.parent);
+	}
 
-	catchDom = function catchDom() {
-		dom.linkModal = $(st.linkModal);
-	};
+	suscribeEvents = () => {
+		dom.linkModal.on("click", events.openModal) ;
+	}
 
-	asyncatchDom = function asyncatchDom() {
-		dom.parent = $(st.parent);
-		dom.btnClose = $(st.btnClose, st.parent);
-		dom.content = $(st.content, st.parent);
-	};
+	asynSuscribeEvents = () =>{
 
-	suscribeEvents = function suscribeEvents() {
-		dom.linkModal.on("click", events.openModal);
-	};
-
-	asynSuscribeEvents = function asynSuscribeEvents() {
-
+	
 		dom.btnClose.on("click", events.close);
-	};
-
+	}
+	
 	events = {
 
-		openModal: function openModal(e) {
-
-			$.type(st.afterShow) === "function" ? fn.open(st.afterShow) : fn.open();
+		openModal : (e) =>{
+			
+			$.type(st.afterShow) === "function" ? fn.open(st.afterShow) :fn.open() ;
 		},
 
-		close: function close() {
-			$.type(st.afterClose) === "function" ? fn.close(st.afterClose) : fn.close();
+		close 	: () =>{
+			$.type(st.afterClose) === "function" ? fn.close(st.afterClose) :fn.close() ;
 		}
 
-	};
-
+	}
+	
 	fn = {
 
-		open: function open(callback) {
+		open : (callback) =>{
 
-			var modal = $(st.tpl).appendTo("body");
+			let modal = $(st.tpl).appendTo("body");
 			modal.css({
-				"display": "flex",
-				"justify-content": "center",
-				"align-items": "center"
+					"display"			: "flex",
+					"justify-content" 	:"center",
+					"align-items"		: "center"
 			});
 
-			var html = $($(".link_modal a").attr("data-href"));
+			let html = $($(".link_modal a").attr("data-href"));
 
 			asyncatchDom();
 			dom.content.append(html);
 			asynSuscribeEvents();
 
-			callback != undefined ? fn.callback() : '';
+			callback!= undefined ? fn.callback() : '';
+
 		},
 
-		close: function close(callback) {
+		close : (callback) =>{
 
 			dom.parent.remove().hide();
+			callback!= undefined ? fn.callback() : '';
+		},
+		
+	}
 
-			callback != undefined ? fn.callback() : '';
-		}
+	
+  	initialize = (opts) => {
+  	st = $.extend({},defaults,opts);
+    catchDom();
+    suscribeEvents();
 
-	};
-
-	initialize = function initialize(opts) {
-		st = $.extend({}, defaults, opts);
-		catchDom();
-		suscribeEvents();
-	};
-	return {
-		init: initialize
-	};
+		
+  };
+	return{
+		init : initialize
+	}
 },[]);

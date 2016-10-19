@@ -1,11 +1,12 @@
 @import jeet
 @import 'nib'
-
+.locked
+	overflow hidden
 .link_modal
 	a
 		cursor pointer
-#modal
-	display none
+		color red
+
 .modal-fixed
 	position fixed
 	z-index 1000
@@ -14,30 +15,30 @@
 	right 0
 	bottom 0
 	background rgba(0, 0, 0, 0.5)
-.flex
-	display flex
-	justify-content center
-	align-items center
-.modal-wrap
-	position relative
-	display table
-	min-width  30vw
-	max-width  80vw
-	max-height 80vh
-	min-height 30vh
-	border-radius 5px
-	padding 20px
-	background white
-	.modal-content
-		position relative
-	span
-		position absolute
-		z-index 1100
-		right -12.5px
-		top -12.5px
-		border-radius 50%
-		background black
-		color white
-		width 25px
-		height 25px
-		cursor pointer
+	&.flex
+		display flex
+		justify-content center
+		align-items center
+	.modal-wrap
+		display table
+		border-radius 5px
+		padding 20px
+		background white
+		.modal-content
+			position relative
+			min-width  30vw
+			max-width  80vw
+			max-height 80vh
+			min-height 30vh
+			overflow: auto;
+		span
+			position absolute
+			z-index 1100
+			right -12.5px
+			top -12.5px
+			border-radius 50%
+			background black
+			color white
+			width 25px
+			height 25px
+			cursor pointer

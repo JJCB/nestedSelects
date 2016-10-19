@@ -19,7 +19,7 @@ yOSON.AppCore.addModule("modal", function (Sb) {
 		content: ".modal-content",
 		btnClose: ".close",
 		tpl: " <div class='modal-fixed'><div class='modal-wrap'> <div class='modal-content'>asdasdasd</div><span class='close'></span></div></div>",
-
+		html: "",
 		afterShow: '',
 		afterClose: ''
 
@@ -80,7 +80,6 @@ yOSON.AppCore.addModule("modal", function (Sb) {
 		close: function close(callback) {
 
 			dom.parent.remove().hide();
-
 			callback != undefined ? fn.callback() : '';
 		}
 

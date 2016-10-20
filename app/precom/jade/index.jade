@@ -158,8 +158,7 @@ script(type="text/template" id="openModal")
 				.select_group
 					.group
 						label Departamento :
-						select.select_cat(name="depart")
-							option(value="Seleccion" selected disabled) Selecciona
+						select.select_cat(name="dpto")
 					.group
 						label Provincia :
 						select.select_item(name="prov")
@@ -178,6 +177,7 @@ script(type="text/template" id="openModal")
 	
 
 script(type="text/template" id="listSlc")
+	option(value="Seleccion" selected disabled) Selecciona
 	| {{ for(i=0;i<data.length;i++){ }}
 	| {{ if(id == data[i].id_ubigeo) { }}
 	option(value='{{=data[i].id_ubigeo}}' selected) {{=data[i].nombre_ubigeo}}

@@ -152,9 +152,7 @@
         <div class="select_group">
           <div class="group">
             <label>Departamento :</label>
-            <select name="depart" class="select_cat">
-              <option value="Seleccion" selected disabled>Selecciona</option>
-            </select>
+            <select name="dpto" class="select_cat"></select>
           </div>
           <div class="group">
             <label>Provincia :</label>
@@ -179,7 +177,7 @@
   </div>
 </script>
 <script type="text/template" id="listSlc">
-  {{ for(i=0;i<data.length;i++){ }}
+  <option value="Seleccion" selected disabled>Selecciona</option>{{ for(i=0;i<data.length;i++){ }}
   {{ if(id == data[i].id_ubigeo) { }}
   <option value="{{=data[i].id_ubigeo}}" selected>{{=data[i].nombre_ubigeo}}</option>{{
   } else {

@@ -1,19 +1,19 @@
-yOSON.AppCore.addModule("combo", function(Sb){
-	let st              = {},
-      dom             = {},      
-      events,
-      fn,
-      findDatos={},
-      catchDom,
-      asyncatchDom,
-      afterCatchDom,
-      suscribeEvents,
-      asynSuscribeEvents,
-      initialize;
+yOSON.AppCore.addModule("combo", (Sb) => {
+	let st 						= {},
+			dom 					= {},
+			events,
+			fn,
+			findDatos			={},
+			catchDom,
+			asyncatchDom,
+			afterCatchDom,
+			suscribeEvents,
+			asynSuscribeEvents,
+			initialize;
 
 	st = {
 
-		linkModal 		: ".link_modal a",
+		linkModal 	: ".link_modal a",
 		slcDepart		: "select[name='dpto']",
 		slcProv			: "select[name='prov']",
 		slcDist			: "select[name='dist']",
@@ -25,7 +25,7 @@ yOSON.AppCore.addModule("combo", function(Sb){
 		urlprov			: "http://www.json-generator.com/api/json/get/cpXdelSNki?indent=2",
 		urlDist			: "http://www.json-generator.com/api/json/get/cjWbLDrQXS?indent=2",
 		arrayList		: [],
-		html 			: "",
+		html 				: "",
 		idArray				: null,
 		data	: {
 			dpto 	: {},
@@ -38,10 +38,11 @@ yOSON.AppCore.addModule("combo", function(Sb){
 			
 	catchDom = () => {
 		dom.linkModal 	= $(st.linkModal);
-		dom.idTpl		= dom.linkModal.data("link-modal");
+		dom.idTpl				= dom.linkModal.attr("data-link-modal");
 	}
 
 	asyncatchDom = () =>{
+
 		dom.slcDepart	= $(st.slcDepart, st.parentModal);
 		dom.slcProv		= $(st.slcProv, st.parentModal);
 		dom.slcDist		= $(st.slcDist, st.parentModal);
@@ -52,6 +53,7 @@ yOSON.AppCore.addModule("combo", function(Sb){
 	}
 
 	afterCatchDom = () => {
+
 		_.templateSettings = {
 			evaluate: /\{\{([\s\S]+?)\}\}/g,
 			interpolate: /\{\{=([\s\S]+?)\}\}/g
@@ -70,51 +72,55 @@ yOSON.AppCore.addModule("combo", function(Sb){
 		dom.btnRemove.on("click", events.removeList);
 		dom.btnEdit.on("click", events.editList);
 		dom.btnUpdate.on("click", events.updateList);
-		$("#modal").on("click",'.remove',events.removeList)
-		$("#modal").on("click",'.edit',events.editList)
+		$("#modal").on("click",'.remove',events.removeList);
+		$("#modal").on("click",'.edit',events.editList);
 	}
 	
 	events = {
 
-		openModal : (e) => {
+		openModal (e) {
 			e.preventDefault();
 			fn.renderModal();
 		},
 
-		findProvincia : () =>{
+		findProvincia () {
+
 			let ajax = [
 				{
-					slc : dom.slcProv,
-					id  : st.data.prov.id,
-					parent : dom.slcDepart,
-					url : st.urlprov
+					slc 		: dom.slcProv,
+					id  		: st.data.prov.id,
+					parent 	: dom.slcDepart,
+					url 		: st.urlprov
 				}
 			];
+
 			fn.ajax(ajax);
 			fn.cleanSlcDist();
 		},
 
-		findDistrito : () =>{
+		findDistrito () {
 
 			let ajaxDist = [
 					{
-						slc : dom.slcDist,
-						id  : st.data.dist.id,
-						parent : dom.slcProv,
-						url : st.urlDist
+						slc 		: dom.slcDist,
+						id  		: st.data.dist.id,
+						parent 	: dom.slcProv,
+						url 		: st.urlDist
 					}
 				];
 
 			fn.ajax(ajaxDist);
 		},
 
-		removeList : (e) => {
+		removeList (e) {
 
-			let id 		= $(e.target).parent().children("div").attr("data-id");
+			let id 		= $(e.target).siblings("div").attr("data-id");
 			st.arrayList.splice(id, 1);
 
-			$(e.target).parent().slideUp("slow",function(){
-				if(st.arrayList.length==0){
+			$(e.target).parent().slideUp("slow",() =>{
+
+				if(!st.arrayList.length){
+
 					$(".list_add").slideUp();
 				}
 				fn.showList();
@@ -125,25 +131,28 @@ yOSON.AppCore.addModule("combo", function(Sb){
 			fn.changeAdd();
 			
 		},
-		addList : () => {
 
-			let data = fn.captureDato();
+		addList () {
+
+			let data = fn.captureDat();
 			st.arrayList.push(data);
 			fn.showList ();
 			
 		},
-		editList :(e) => {
+
+		editList (e) {
 
 			st.idArray 	= $(e.target).parent().children("div").attr("data-id");
-			st.data 	= st.arrayList[st.idArray];
+			st.data 		= st.arrayList[st.idArray];
 			$("ul li").removeClass("active");
 			$(e.target).parent().addClass("active");
 			fn.editData();
 
 		},
 
-		updateList : () =>{
-			st.arrayList[st.idArray] 	= fn.captureDato();
+		updateList () {
+
+			st.arrayList[st.idArray] 	= fn.captureDat();
 			dom.btnAdd.show();
 			dom.btnUpdate.hide();
 			fn.showList ();
@@ -153,18 +162,18 @@ yOSON.AppCore.addModule("combo", function(Sb){
 	
 	fn = {
 
-		renderModal : function(){
+		renderModal () {
 
-			fn.template($(dom.idTpl).html(),{data : {}} ,function(html){
+			fn.template($(dom.idTpl).html(),{data : {}} ,(html) => {
 				st.html += html;
 				fn.dataList();
 
 			});
 		},
 
-		dataList : () => {
+		dataList () {
 
-			fn.template($("#addDatos").html(),{data:st.arrayList}, function(html){
+			fn.template($("#addDatos").html(),{data:st.arrayList}, (html) => {
 
 				st.html += html;
 				fn.showModal(st.html);
@@ -172,14 +181,14 @@ yOSON.AppCore.addModule("combo", function(Sb){
 			});
 		},
 
-		showModal : (html)=>{
+		showModal (html) {
 
 			let opts ={
-				html 		 : html,
-				locked		 : true,
-				afterShow 	 : fn.AfterModal,
-				beforeShow	 : fn.before,
-				afterClose	 : fn.cleanData
+				html					: html,
+				locked 				: true,
+				afterShow 		: fn.AfterModal,
+				beforeShow		: fn.before,
+				afterClose		: fn.cleanData
 
 			}
 			
@@ -187,20 +196,19 @@ yOSON.AppCore.addModule("combo", function(Sb){
 
 		},
 
-		before : ()  =>{
+		before () {
 			console.log("before mostrar");
 		},
 
-		AfterModal : () =>{
+		AfterModal () {
 
 			asyncatchDom();
-
 			let ajax = [
 					{
-						slc : dom.slcDepart,
-						id  : st.data.dpto.id,
-						parent : false,
-						url : st.urlDepart,
+						slc 		: dom.slcDepart,
+						id			: st.data.dpto.id,
+						parent 	: false,
+						url 		: st.urlDepart,
 					}
 				];
 
@@ -209,23 +217,25 @@ yOSON.AppCore.addModule("combo", function(Sb){
 
 		},
 	
-		ajax : (opts) =>{
+		ajax (opts) {
+
 			let datSlc = opts[0];
 			$.ajax({
-				url			: datSlc.url,
+				url				: datSlc.url,
 				dataType	: "json",
 				success 	: (data) =>{
 
 					opts.splice(0, 1);
 					let valor = data;
-
 					if (datSlc.parent) {
+
 						let option = datSlc.parent.val();
 						valor = valor[option];
 					}
-					fn.template($("#listSlc").html(), {data: valor, id:datSlc.id}, function(html){
-						$(datSlc.slc).html(html);
+					
+					fn.template($("#listSlc").html(), {data: valor, id:datSlc.id}, (html) => {
 						
+						$(datSlc.slc).html(html);
 						if(typeof(datSlc.callback)==="function"){
 							datSlc.callback(opts);
 						}
@@ -234,20 +244,18 @@ yOSON.AppCore.addModule("combo", function(Sb){
 			})	
 		},
 
-		template : (tpl, data, fn) =>{
+		template (tpl, data, fn) {
 
 			let html = _.template(tpl, data);		
-			
 			if (fn != undefined) {
 				fn(html);
 			}
 		},
 
-		showList : () =>{
+		showList () {
 
 			$(".list_add ").remove();
-
-			fn.template($("#addDatos").html(),{data:st.arrayList},function(html){
+			fn.template($("#addDatos").html(),{data:st.arrayList}, (html) => {
 				$("#modal").append(html);
 				Sb.trigger('modal:onResize');
 
@@ -255,19 +263,19 @@ yOSON.AppCore.addModule("combo", function(Sb){
 
 		},
 
-		captureDato : () =>{
-			var miObjeto = new Object();
-			$( "select option:selected" ).each(function( index ) {
-					miObjeto[$(this).parent().attr("name")] = {
+		captureDat () {
+
+			var myObject = {};
+			$( "select option:selected" ).each( function(index) {
+					myObject[$(this).parent().attr("name")] = {
 						id 	 : $(this).val(),
 						name : $(this).text(), 
 					}
-					
 			});
-  			return miObjeto;
+				return myObject;
 		},
 
-		cleanData : () =>{
+		cleanData () {
 			st.idArray 	= null;
 			st.data = {
 					dpto: {
@@ -285,58 +293,61 @@ yOSON.AppCore.addModule("combo", function(Sb){
 				}
 		},
 
-		cleanSlcDist : ()=>{
+		cleanSlcDist () {
 			dom.slcDist.children("option").remove();
 			dom.slcDist.append("<option selected disabled>Selecciona</option>");
 		},
 
-		changeUpdate : () =>{
+		changeUpdate () {
 
 			dom.btnAdd.hide();
 			dom.btnUpdate.show();
 			$(".btn_loading").hide();
 		},
 
-		changeAdd :() =>{
+		changeAdd () {
 
 			dom.btnAdd.show();
 			$(".btn_loading").hide();
 			dom.btnUpdate.hide();
 		},
-		changeLoading : () => {
+
+		changeLoading () {
+
 			dom.btnAdd.hide();
 			dom.btnUpdate.hide();
 			$(".btn_loading").show();
 		},
-		editData : () =>{
+
+		editData () {
 			fn.changeLoading();
 
 			let data=  [
 				{
-					slc 		: dom.slcDepart,
-					id  		: st.data.dpto.id,
+					slc 			: dom.slcDepart,
+					id  			: st.data.dpto.id,
 					parent  	: false,
-					name 		: "depart",
-					url 		: st.urlDepart,
-					callback 	: fn.ajax
+					name 			: "depart",
+					url 			: st.urlDepart,
+					callback	: fn.ajax
 
 				},
 				{
-					slc 		: dom.slcProv,
-					id  		: st.data.prov.id,
+					slc 			: dom.slcProv,
+					id  			: st.data.prov.id,
 					parent 		: dom.slcDepart,
-					name 		: "prov",
-					url 		: st.urlprov,
+					name 			: "prov",
+					url 			: st.urlprov,
 					callback	: fn.ajax
 					
 					
 				},
 				{
-					slc 		: dom.slcDist,
-					id 			: st.data.dist.id,
+					slc 			: dom.slcDist,
+					id 				: st.data.dist.id,
 					parent 		: dom.slcProv,
-					name 		: "dist",
-					url 		: st.urlDist,
+					name 			: "dist",
+					url 			: st.urlDist,
 					callback 	: fn.changeUpdate
 				}
 			]
@@ -344,24 +355,26 @@ yOSON.AppCore.addModule("combo", function(Sb){
 			fn.ajax(data);
 		}
 	}
-  	initialize = () => {
-    	catchDom();
+
+	initialize = () => {
+
+		catchDom();
 		afterCatchDom();
-    	suscribeEvents();
+		suscribeEvents();
 	};
 	
 	return{
 		init : initialize
 	};
-},[]);
+});
 		
 
 
-yOSON.AppCore.addModule("modal", function(Sb){
+yOSON.AppCore.addModule("modal", (Sb) => {
 	
-	let st              = {},
-	 defaults 			= {},
-	 dom             	= {},      
+	let st			= {},
+	 defaults		= {},
+	 dom				= {},      
 	 events,
 	 fn,
 	 catchDom,
@@ -371,11 +384,11 @@ yOSON.AppCore.addModule("modal", function(Sb){
 	 initialize;
 
 	defaults = {
-		parent		: ".modal-fixed",
+		parent			: ".modal-fixed",
 		parentWrap	: ".modal-wrap",
-		content		: ".modal-content",
-		btnClose	: ".close",
-		tpl 		: " <div class='modal-fixed'><div class='modal-wrap'> <div class='modal-content'></div><span class='close'></span></div></div>",
+		content			: ".modal-content",
+		btnClose		: ".close",
+		tpl 				: " <div class='modal-fixed'><div class='modal-wrap'> <div class='modal-content'></div><span class='close'></span></div></div>",
 		settings    : {}
 
 	}
@@ -385,10 +398,11 @@ yOSON.AppCore.addModule("modal", function(Sb){
 	}
 
 	asyncatchDom = () => {
+
 		dom.parent 			= $(st.parent);
 		dom.btnClose 		= $(st.btnClose, st.parent);
 		dom.content 		= $(st.content, st.parent);
-		dom.parentWrap 		= $(st.parentWrap, st.parent);
+		dom.parentWrap 	= $(st.parentWrap, st.parent);
 	}
 
 	suscribeEvents = () => {
@@ -401,12 +415,12 @@ yOSON.AppCore.addModule("modal", function(Sb){
 	
 	events = {
 
-		openModal : (e) =>{
+		openModal (e) {
 
-			fn.open(opts) ;
+			fn.open(opts);
 		},
 
-		close 	: () =>{
+		close () {
 			fn.close();
 		}
 
@@ -414,7 +428,7 @@ yOSON.AppCore.addModule("modal", function(Sb){
 	
 	fn = {
 		
-		open : (opts) =>{
+		open (opts) {
 
 			st.settings = opts || {};
 
@@ -429,18 +443,19 @@ yOSON.AppCore.addModule("modal", function(Sb){
 			fn.afterShow();
 	
 		},
-		beforeShow : () =>{
+
+		beforeShow () {
 
 			$.type(st.settings.beforeShow) === "function" ? st.settings.beforeShow(): '';
 
 		},
 
-		afterShow : () =>{
+		afterShow () {
 
 			$.type(st.settings.afterShow) === "function" ? setTimeout(st.settings.afterShow,1): '';
 		},
 
-		showModal : () =>{
+		showModal () {
 
 			$(st.tpl).appendTo("body");
 			asyncatchDom();
@@ -448,7 +463,7 @@ yOSON.AppCore.addModule("modal", function(Sb){
 
 		},
 
-		modalCss : ()=>{
+		modalCss () {
 
 			dom.parentWrap.css({
 					position:'absolute',
@@ -459,7 +474,7 @@ yOSON.AppCore.addModule("modal", function(Sb){
 
 		},
 
-		close : () =>{
+		close () {
 
 			dom.parent.remove();
 			$("body").removeClass("locked")
@@ -467,12 +482,12 @@ yOSON.AppCore.addModule("modal", function(Sb){
 			fn.afterClose(); 
 		},
 
-		afterClose: () =>{
+		afterClose () {
 			$.type(st.settings.afterClose) === "function" ? setTimeout(st.settings.afterClose,1)  : '' ;
 
 		},
 
-		onResize :() =>{
+		onResize () {
 			$(window).resize(fn.modalCss);
 			$( window ).trigger("resize");
 		},
@@ -480,8 +495,9 @@ yOSON.AppCore.addModule("modal", function(Sb){
 	}
 
 	
-	initialize = () => {
-		st = $.extend({},defaults,{});
+	initialize = (oP) => {
+
+		st = $.extend({}, defaults, oP);
 		catchDom();
 		suscribeEvents();
 
@@ -492,3 +508,4 @@ yOSON.AppCore.addModule("modal", function(Sb){
 		init : initialize
 	};
 });
+

@@ -39,10 +39,11 @@ yOSON.AppCore.addModule("combo", function (Sb) {
 
 	catchDom = function catchDom() {
 		dom.linkModal = $(st.linkModal);
-		dom.idTpl = dom.linkModal.data("link-modal");
+		dom.idTpl = dom.linkModal.attr("data-link-modal");
 	};
 
 	asyncatchDom = function asyncatchDom() {
+
 		dom.slcDepart = $(st.slcDepart, st.parentModal);
 		dom.slcProv = $(st.slcProv, st.parentModal);
 		dom.slcDist = $(st.slcDist, st.parentModal);
@@ -53,6 +54,7 @@ yOSON.AppCore.addModule("combo", function (Sb) {
 	};
 
 	afterCatchDom = function afterCatchDom() {
+
 		_.templateSettings = {
 			evaluate: /\{\{([\s\S]+?)\}\}/g,
 			interpolate: /\{\{=([\s\S]+?)\}\}/g
@@ -76,23 +78,22 @@ yOSON.AppCore.addModule("combo", function (Sb) {
 	};
 
 	events = {
-
 		openModal: function openModal(e) {
 			e.preventDefault();
 			fn.renderModal();
 		},
-
 		findProvincia: function findProvincia() {
+
 			var ajax = [{
 				slc: dom.slcProv,
 				id: st.data.prov.id,
 				parent: dom.slcDepart,
 				url: st.urlprov
 			}];
+
 			fn.ajax(ajax);
 			fn.cleanSlcDist();
 		},
-
 		findDistrito: function findDistrito() {
 
 			var ajaxDist = [{
@@ -104,14 +105,15 @@ yOSON.AppCore.addModule("combo", function (Sb) {
 
 			fn.ajax(ajaxDist);
 		},
-
 		removeList: function removeList(e) {
 
-			var id = $(e.target).parent().children("div").attr("data-id");
+			var id = $(e.target).siblings("div").attr("data-id");
 			st.arrayList.splice(id, 1);
 
 			$(e.target).parent().slideUp("slow", function () {
-				if (st.arrayList.length == 0) {
+
+				if (!st.arrayList.length) {
+
 					$(".list_add").slideUp();
 				}
 				fn.showList();
@@ -123,7 +125,7 @@ yOSON.AppCore.addModule("combo", function (Sb) {
 		},
 		addList: function addList() {
 
-			var data = fn.captureDato();
+			var data = fn.captureDat();
 			st.arrayList.push(data);
 			fn.showList();
 		},
@@ -135,9 +137,9 @@ yOSON.AppCore.addModule("combo", function (Sb) {
 			$(e.target).parent().addClass("active");
 			fn.editData();
 		},
-
 		updateList: function updateList() {
-			st.arrayList[st.idArray] = fn.captureDato();
+
+			st.arrayList[st.idArray] = fn.captureDat();
 			dom.btnAdd.show();
 			dom.btnUpdate.hide();
 			fn.showList();
@@ -145,7 +147,6 @@ yOSON.AppCore.addModule("combo", function (Sb) {
 	};
 
 	fn = {
-
 		renderModal: function renderModal() {
 
 			fn.template($(dom.idTpl).html(), { data: {} }, function (html) {
@@ -153,7 +154,6 @@ yOSON.AppCore.addModule("combo", function (Sb) {
 				fn.dataList();
 			});
 		},
-
 		dataList: function dataList() {
 
 			fn.template($("#addDatos").html(), { data: st.arrayList }, function (html) {
@@ -163,7 +163,6 @@ yOSON.AppCore.addModule("combo", function (Sb) {
 				st.html = "";
 			});
 		},
-
 		showModal: function showModal(html) {
 
 			var opts = {
@@ -177,15 +176,12 @@ yOSON.AppCore.addModule("combo", function (Sb) {
 
 			Sb.trigger('modal:open', opts);
 		},
-
 		before: function before() {
 			console.log("before mostrar");
 		},
-
 		AfterModal: function AfterModal() {
 
 			asyncatchDom();
-
 			var ajax = [{
 				slc: dom.slcDepart,
 				id: st.data.dpto.id,
@@ -196,8 +192,8 @@ yOSON.AppCore.addModule("combo", function (Sb) {
 			fn.ajax(ajax);
 			asynSuscribeEvents();
 		},
-
 		ajax: function ajax(opts) {
+
 			var datSlc = opts[0];
 			$.ajax({
 				url: datSlc.url,
@@ -206,14 +202,15 @@ yOSON.AppCore.addModule("combo", function (Sb) {
 
 					opts.splice(0, 1);
 					var valor = data;
-
 					if (datSlc.parent) {
+
 						var option = datSlc.parent.val();
 						valor = valor[option];
 					}
-					fn.template($("#listSlc").html(), { data: valor, id: datSlc.id }, function (html) {
-						$(datSlc.slc).html(html);
 
+					fn.template($("#listSlc").html(), { data: valor, id: datSlc.id }, function (html) {
+
+						$(datSlc.slc).html(html);
 						if (typeof datSlc.callback === "function") {
 							datSlc.callback(opts);
 						}
@@ -221,37 +218,32 @@ yOSON.AppCore.addModule("combo", function (Sb) {
 				}
 			});
 		},
-
 		template: function template(tpl, data, fn) {
 
 			var html = _.template(tpl, data);
-
 			if (fn != undefined) {
 				fn(html);
 			}
 		},
-
 		showList: function showList() {
 
 			$(".list_add ").remove();
-
 			fn.template($("#addDatos").html(), { data: st.arrayList }, function (html) {
 				$("#modal").append(html);
 				Sb.trigger('modal:onResize');
 			});
 		},
+		captureDat: function captureDat() {
 
-		captureDato: function captureDato() {
-			var miObjeto = new Object();
+			var myObject = {};
 			$("select option:selected").each(function (index) {
-				miObjeto[$(this).parent().attr("name")] = {
+				myObject[$(this).parent().attr("name")] = {
 					id: $(this).val(),
 					name: $(this).text()
 				};
 			});
-			return miObjeto;
+			return myObject;
 		},
-
 		cleanData: function cleanData() {
 			st.idArray = null;
 			st.data = {
@@ -269,19 +261,16 @@ yOSON.AppCore.addModule("combo", function (Sb) {
 				}
 			};
 		},
-
 		cleanSlcDist: function cleanSlcDist() {
 			dom.slcDist.children("option").remove();
 			dom.slcDist.append("<option selected disabled>Selecciona</option>");
 		},
-
 		changeUpdate: function changeUpdate() {
 
 			dom.btnAdd.hide();
 			dom.btnUpdate.show();
 			$(".btn_loading").hide();
 		},
-
 		changeAdd: function changeAdd() {
 
 			dom.btnAdd.show();
@@ -289,6 +278,7 @@ yOSON.AppCore.addModule("combo", function (Sb) {
 			dom.btnUpdate.hide();
 		},
 		changeLoading: function changeLoading() {
+
 			dom.btnAdd.hide();
 			dom.btnUpdate.hide();
 			$(".btn_loading").show();
@@ -324,7 +314,9 @@ yOSON.AppCore.addModule("combo", function (Sb) {
 			fn.ajax(data);
 		}
 	};
+
 	initialize = function initialize() {
+
 		catchDom();
 		afterCatchDom();
 		suscribeEvents();
@@ -333,10 +325,9 @@ yOSON.AppCore.addModule("combo", function (Sb) {
 	return {
 		init: initialize
 	};
-}, []);
+});
 
 yOSON.AppCore.addModule("modal", function (Sb) {
-	var _this = this;
 
 	var st = {},
 	    defaults = {},
@@ -364,6 +355,7 @@ yOSON.AppCore.addModule("modal", function (Sb) {
 	};
 
 	asyncatchDom = function asyncatchDom() {
+
 		dom.parent = $(st.parent);
 		dom.btnClose = $(st.btnClose, st.parent);
 		dom.content = $(st.content, st.parent);
@@ -379,20 +371,16 @@ yOSON.AppCore.addModule("modal", function (Sb) {
 	};
 
 	events = {
-
 		openModal: function openModal(e) {
 
 			fn.open(opts);
 		},
-
 		close: function close() {
 			fn.close();
 		}
-
 	};
 
 	fn = {
-
 		open: function open(opts) {
 
 			st.settings = opts || {};
@@ -411,19 +399,16 @@ yOSON.AppCore.addModule("modal", function (Sb) {
 
 			$.type(st.settings.beforeShow) === "function" ? st.settings.beforeShow() : '';
 		},
-
 		afterShow: function afterShow() {
 
 			$.type(st.settings.afterShow) === "function" ? setTimeout(st.settings.afterShow, 1) : '';
 		},
-
 		showModal: function showModal() {
 
 			$(st.tpl).appendTo("body");
 			asyncatchDom();
 			asynSuscribeEvents();
 		},
-
 		modalCss: function modalCss() {
 
 			dom.parentWrap.css({
@@ -433,7 +418,6 @@ yOSON.AppCore.addModule("modal", function (Sb) {
 			});
 			st.settings.locked == true ? $("body").addClass("locked") : '';
 		},
-
 		close: function close() {
 
 			dom.parent.remove();
@@ -441,25 +425,23 @@ yOSON.AppCore.addModule("modal", function (Sb) {
 
 			fn.afterClose();
 		},
-
 		afterClose: function afterClose() {
 			$.type(st.settings.afterClose) === "function" ? setTimeout(st.settings.afterClose, 1) : '';
 		},
-
 		onResize: function onResize() {
 			$(window).resize(fn.modalCss);
 			$(window).trigger("resize");
 		}
-
 	};
 
-	initialize = function initialize() {
-		st = $.extend({}, defaults, {});
+	initialize = function initialize(oP) {
+
+		st = $.extend({}, defaults, oP);
 		catchDom();
 		suscribeEvents();
 
-		Sb.events(["modal:open"], fn.open, _this);
-		Sb.events(["modal:onResize"], fn.onResize, _this);
+		Sb.events(["modal:open"], fn.open, undefined);
+		Sb.events(["modal:onResize"], fn.onResize, undefined);
 	};
 	return {
 		init: initialize

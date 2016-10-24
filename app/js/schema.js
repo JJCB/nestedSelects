@@ -14,7 +14,7 @@ var schema = {
                     'actions':{
                         'index': function(){
                             //alert("ingreso");
-                            yOSON.AppCore.runModule("combo");
+                            yOSON.AppCore.runModule("combo_anidado");
                             yOSON.AppCore.runModule("modal");
                         },
                         'byDefault':function(){

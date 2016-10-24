@@ -35,7 +35,7 @@ html(lang=es)
 			| quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
 			| consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
 			| <br>
-			a.fancybox.open_modal(data-link-modal="#openModal") Abrir modal
+			a.fancybox.open_modal(data-link-modal="#tplComboAnidado") Abrir modal
 			|  <br>
 			| cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
 			| proident, sunt in culpa qui officia deserunt mollit anim id est laborum.| Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
@@ -149,7 +149,7 @@ html(lang=es)
 		script(src="js/loader.js")
 
 
-script(type="text/template" id="openModal")
+script(type="text/template" id="tplComboAnidado")
 	#modal.modal_city
 		.content
 			h3.title
@@ -176,7 +176,7 @@ script(type="text/template" id="openModal")
 						| Espere...
 	
 
-script(type="text/template" id="listSlc")
+script(type="text/template" id="tplListSlc")
 	option(value="Seleccion" selected disabled) Selecciona
 	| {{ for(i=0;i<data.length;i++){ }}
 	| {{ if(id == data[i].id_ubigeo) { }}
@@ -189,18 +189,18 @@ script(type="text/template" id="listSlc")
 	| } }
 	| }}
 
-script(type="text/template" id="addDatos")
+script(type="text/template" id="tplShowList")
 	| {{ if(!data.length == 0) { }}
-	.list_add
+	.content_list
 		h3.title Lista de datos agregados
 		ul.content_list
 			li
 				div.depart Departemento
 				div.prov Provncia
 				div.dist Distrito
-				div.editar Editar
-				div.remover Eliminar
+				div.edit Editar
+				div.remove Eliminar
 				|{{$.each(data, function(key, value){ }}
-				| <li><div class='id' data-id='{{=key}}'></div><div data-id-dpto='{{=value.dpto.id}}'>{{=value.dpto.name}}</div><div data-id-prov='{{=value.prov.id}}'>{{=value.prov.name}}</div><div data-id-dist='{{=value.dist.id}}'>{{=value.dist.name}}</div><div class='edit'>Edit</div><div class='remove'>Eliminar</div></li>
+				| <li><div class='id' data-id='{{=key}}'></div><div data-id-dpto='{{=value.dpto.id}}'>{{=value.dpto.name}}</div><div data-id-prov='{{=value.prov.id}}'>{{=value.prov.name}}</div><div data-id-dist='{{=value.dist.id}}'>{{=value.dist.name}}</div><div class='btn_edit'>Edit</div><div class='btn_remove'>Eliminar</div></li>
 				|{{ }); }}
 	|{{ } }}

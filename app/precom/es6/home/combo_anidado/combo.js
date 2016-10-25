@@ -175,8 +175,8 @@ yOSON.AppCore.addModule("combo_anidado", (Sb) => {
 		},
 
 		LoadDataList () {
-			fn.template($(st.tplShowList).html(),{data:st.arrayList}, (html) => {
 
+			fn.template($(st.tplShowList).html(),{data:st.arrayList}, (html) => {
 				st.html += html;
 				fn.showModal(st.html);
 				st.html = "";
@@ -265,7 +265,7 @@ yOSON.AppCore.addModule("combo_anidado", (Sb) => {
 
 		captureData () {
 
-			var myObject = {};
+			let myObject = {};
 			$( "select option:selected" ).each( function(index) {
 					myObject[$(this).parent().attr("name")] = {
 						id 	 : $(this).val(),
@@ -502,4 +502,3 @@ yOSON.AppCore.addModule("modal", (Sb) => {
 		init : initialize
 	};
 });
-

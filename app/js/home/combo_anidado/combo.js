@@ -157,8 +157,8 @@ yOSON.AppCore.addModule("combo_anidado", function (Sb) {
 			});
 		},
 		LoadDataList: function LoadDataList() {
-			fn.template($(st.tplShowList).html(), { data: st.arrayList }, function (html) {
 
+			fn.template($(st.tplShowList).html(), { data: st.arrayList }, function (html) {
 				st.html += html;
 				fn.showModal(st.html);
 				st.html = "";

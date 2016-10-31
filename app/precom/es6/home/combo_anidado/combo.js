@@ -192,7 +192,6 @@ yOSON.AppCore.addModule("combo_anidado", (Sb) => {
 				afterShow 		: fn.AfterModal,
 				beforeShow		: fn.before,
 				afterClose		: fn.cleanData,
-				onResize			: true
 
 			}
 			
@@ -220,9 +219,6 @@ yOSON.AppCore.addModule("combo_anidado", (Sb) => {
 			let dataSlc = opts[0];
 			$.ajax({
 				url					: dataSlc.url,
-				beforeSend 	: () =>{
-						Sb.trigger('modal:showModal');
-				},
 				dataType		: "json",
 				success 		: (data) =>{
 
@@ -390,7 +386,9 @@ yOSON.AppCore.addModule("modal", (Sb) => {
 		modalLoading	: ".modal-loading",
 		tplWrap 			: "<div class='modal-overlay'></div><div class='modal-wrap'> <div class='modal-content'></div><span class='close'></span></div>",
 		tplLoading 		: "<div class='modal-loading'><img src='../img/loading.gif'></div>",
-		settings    	: {}
+		settings    	: {
+				onResize			: true
+		}
 
 	}
 			
@@ -424,7 +422,7 @@ yOSON.AppCore.addModule("modal", (Sb) => {
 		
 		open (opts = {}) {
 
-			st.settings = opts;
+			st.settings = $.extend({}, defaults.settings, opts);
 			fn.beforeShow();
 			fn.showModal();
 			dom.content.append(st.settings.html);
@@ -432,7 +430,7 @@ yOSON.AppCore.addModule("modal", (Sb) => {
 			fn.modalCss();
 			st.settings.onResize ? fn.onResize() : '' ;
 
-		},
+		},	
 
 		beforeShow () {
 
@@ -452,7 +450,6 @@ yOSON.AppCore.addModule("modal", (Sb) => {
 		},
 
 		modalCss () {
-
 			dom.parent.css({
 					position:'fixed',
 					left: ($(window).width() - dom.parent.outerWidth())/2,
@@ -470,7 +467,7 @@ yOSON.AppCore.addModule("modal", (Sb) => {
 		},
 
 		onResize () {
-
+			
 			$(window).resize(()=>{
 					dom.parent.css({
 						position:'fixed',

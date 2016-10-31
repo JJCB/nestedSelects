@@ -1,99 +1,177 @@
-yOSON.AppCore.addModule("modal", function(Sb){
+yOSON.AppCore.addModule("modal", (Sb) => {
 	
-	let st              = {},
-	defaults 			= {},
-      dom             	= {},      
-      events,
-      fn,
-      catchDom,
-      suscribeEvents,
-      asyncatchDom,
-	  asynSuscribeEvents,
-      initialize;
+	let st			= {},
+	 defaults		= {},
+	 dom				= {},      
+	 events,
+	 fn,
+	 catchDom,
+	 suscribeEvents,
+	 asyncatchDom,
+	 asynSuscribeEvents,
+	 initialize;
 
 	defaults = {
-		linkModal 	: ".open_modal",
-		parent		: ".modal-fixed",
-		content		: ".modal-content",
-		btnClose	: ".close",
-		tpl 		: " <div class='modal-fixed'><div class='modal-wrap'> <div class='modal-content'>asdasdasd</div><span class='close'></span></div></div>",
-		html		: "",
-		afterShow	: '',
-		afterClose	: ''
-
+		parent				: ".modal-overlay",
+		wrap 		 			: ".modal-wrap",
+		content				: ".modal-content",
+		btnClose			: ".modalClose",
+		modalLoading	: ".modal-loading",
+		tplWrap 			: "<div class='modal-overlay'><div class='modalClose'>X Cerrar</div><div class='modal-wrap'> <div class='modal-content'></div><span class='modalClose'></span></div></div>",
+		tplLoading 		: "<div class='modal-loading'><img src='../../neoauto3/public/static/neoauto3/img/plugins/fancybox/fancybox_loading@2x.gif'></div>",
+		settings    	: {
+				cssWrap			: {
+					padding 		: "20px",
+				},
+				cssContent 	: {},
+				onResize		: true
+		}
 	}
-			
-	catchDom = () => {
-		dom.linkModal 	= $(st.linkModal);
-	}
-
+	
 	asyncatchDom = () => {
-		dom.parent 			= $(st.parent);
-		dom.btnClose 		= $(st.btnClose, st.parent);
-		dom.content 		= $(st.content, st.parent);
-	}
 
-	suscribeEvents = () => {
-		dom.linkModal.on("click", events.openModal) ;
+		dom.parent 					= $(st.parent);
+		dom.wrap 						=	$(st.wrap, st.parent)
+		dom.btnClose 				= $(st.btnClose, dom.parent);
+		dom.content 				= $(st.content, dom.parent);
 	}
 
 	asynSuscribeEvents = () =>{
 
-	
 		dom.btnClose.on("click", events.close);
+		dom.parent.on("click", events.close);
 	}
 	
 	events = {
 
-		openModal : (e) =>{
-			
-			$.type(st.afterShow) === "function" ? fn.open(st.afterShow) :fn.open() ;
+		openModal (e) {
+			fn.open();
 		},
 
-		close 	: () =>{
-			$.type(st.afterClose) === "function" ? fn.close(st.afterClose) :fn.close() ;
-		}
+		close (e) {
 
+			if (e.target == this){
+				fn.close(st.settings.afterClose);
+			}
+		}
 	}
+
 	
 	fn = {
+		
+		open (opts = {}) {
 
-		open : (callback) =>{
+			st.settings = $.extend({}, defaults.settings, opts);
+		
+			fn.showLoading();
+			fn._loadModal();
 
-			let modal = $(st.tpl).appendTo("body");
-			modal.css({
-					"display"			: "flex",
-					"justify-content" 	:"center",
-					"align-items"		: "center"
-			});
+			if(st.settings.beforeShow && typeof st.settings.beforeShow === "function") {
+					fn._beforeShow();
+			}
+			else{
+					fn._addHtmlModal();
+			}
+		},	
 
-			let html = $($(".link_modal a").attr("data-href"));
+		_addHtmlModal () {
 
-			asyncatchDom();
-			dom.content.append(html);
-			asynSuscribeEvents();
+			dom.content.append(st.settings.html);
 
-			callback!= undefined ? fn.callback() : '';
+			fn._setCss();
 
+			if(st.settings.beforeShow && typeof st.settings.afterShow === "function"){
+				fn._afterShow();
+			}
 		},
 
-		close : (callback) =>{
+		_beforeShow () {
 
-			dom.parent.remove().hide();
-			callback!= undefined ? fn.callback() : '';
+			st.settings.beforeShow(st.tplWrap);
+			setTimeout(fn._addHtmlModal(), 1000);
+		},
+
+		_afterShow () {
+
+				setTimeout(st.settings.afterShow(),1)
+		},
+
+		_loadModal () {
+
+			$("body").append(st.tplWrap);
+			asyncatchDom();
+			asynSuscribeEvents();
+		},
+
+		_setCss () {
+
+			if(st.settings.locked){
+
+				$("body").addClass("locked")
+				$("html").addClass("locked-html")
+			}
+
+		/*	dom.wrap.css({
+
+						left: ($(window).width() - dom.content.children().outerWidth())/2,
+						top: ($(window).height() - dom.content.children().outerHeight())/2
+			})
+			*/
+			dom.wrap.css(st.settings.cssWrap || {});
+			dom.content.css(st.settings.cssContent || {});
+			dom.wrap.addClass("active");
+			fn.hideLoading();
+		},
+
+		_onResize () {
+
+			$(window).resize(()=>{
+					dom.wrap.css({
+						left: ($(window).width() - dom.content.children().outerWidth())/2,
+						top: ($(window).height() - dom.content.children().outerWidth())/2
+				})
+			});
+			setTimeout(function(){$(window).trigger("resize")},2);
+		},
+
+		updateSize () {
+
+			fn._onResize();
 		},
 		
+		close (callback) {
+
+			dom.parent.remove();
+			//dom.overlay.remove();
+
+			$("body").removeClass("locked");
+			$("html").removeClass("locked-html")
+
+			if(callback && $.type(callback) === "function"){
+				setTimeout(callback,1)
+			}
+		},
+
+		showLoading () {
+			$(st.tplLoading).appendTo("body");
+		},
+
+		hideLoading () {
+			$(st.modalLoading).remove();
+		}
 	}
 
-	
-  	initialize = (opts) => {
-  	st = $.extend({},defaults,opts);
-    catchDom();
-    suscribeEvents();
+	initialize = (oP) => {
 
-		
-  };
+		st = $.extend({}, defaults, oP);
+		Sb.events(["modal:open"], fn.open, this);
+		Sb.events(["modal:updateSize"], fn.updateSize, this);
+		Sb.events(["modal:showLoading"], fn.showLoading, this);
+		Sb.events(["modal:hideLoading"], fn.hideLoading, this);
+	};
+
 	return{
 		init : initialize
-	}
-},[]);
+	};
+});
+

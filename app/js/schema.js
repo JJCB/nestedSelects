@@ -13,9 +13,9 @@ var schema = {
                     },
                     'actions':{
                         'index': function(){
-                            //alert("ingreso");
-                            yOSON.AppCore.runModule("combo_anidado");
+                            // alert("ingreso");
                             yOSON.AppCore.runModule("modal");
+                            yOSON.AppCore.runModule("combo");
                         },
                         'byDefault':function(){
                             //alert("si no existe un action, este action corre por defecto");

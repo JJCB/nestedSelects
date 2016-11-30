@@ -35,7 +35,7 @@ html(lang=es)
 			| quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
 			| consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
 			| <br>
-			a.fancybox.open_modal(data-link-modal="#tplComboAnidado") Abrir modal
+			a.fancybox.open_modal(data-link-modal="#viewModalExample") Abrir modal
 			|  <br>
 			| cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
 			| proident, sunt in culpa qui officia deserunt mollit anim id est laborum.| Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
@@ -144,6 +144,7 @@ html(lang=es)
 			| var yOSON = {module: "home",controller: "combo_anidado",action: "index" };
 		script(src="bower_components/yosonjs/build/yoson-min.js")
 
+		script(src="js/home/combo_anidado/modal.js")
 		script(src="js/home/combo_anidado/combo.js")
 		script(src="js/schema.js")
 		script(src="js/loader.js")
@@ -175,6 +176,9 @@ script(type="text/template" id="tplComboAnidado")
 					.btn_loading
 						| Espere...
 	
+script(type="text/template" id="viewModalExample")
+
+	img(src="http://local.neoauto3.com/neoauto3/public/static/neoauto3/img/publicacion/all/paso1/examples/premium.png")
 
 script(type="text/template" id="tplListSlc")
 	option(value="Seleccion" selected disabled) Selecciona

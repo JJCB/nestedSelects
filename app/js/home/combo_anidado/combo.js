@@ -1,6 +1,6 @@
 "use strict";
 
-yOSON.AppCore.addModule("combo_anidado", function (Sb) {
+yOSON.AppCore.addModule("combo", function (Sb) {
 	var st = {},
 	    dom = {},
 	    events = void 0,
@@ -175,7 +175,6 @@ yOSON.AppCore.addModule("combo_anidado", function (Sb) {
 				afterClose: fn.cleanData
 
 			};
-
 			Sb.trigger('modal:open', opts);
 		},
 		AfterModal: function AfterModal() {
@@ -322,130 +321,6 @@ yOSON.AppCore.addModule("combo_anidado", function (Sb) {
 		suscribeEvents();
 	};
 
-	return {
-		init: initialize
-	};
-});
-
-yOSON.AppCore.addModule("modal", function (Sb) {
-
-	var st = {},
-	    defaults = {},
-	    dom = {},
-	    events = void 0,
-	    fn = void 0,
-	    catchDom = void 0,
-	    suscribeEvents = void 0,
-	    asyncatchDom = void 0,
-	    asynSuscribeEvents = void 0,
-	    initialize = void 0;
-
-	defaults = {
-		parent: ".modal-wrap",
-		content: ".modal-content",
-		overlay: ".modal-overlay",
-		btnClose: ".close",
-		modalLoading: ".modal-loading",
-		tplWrap: "<div class='modal-overlay'></div><div class='modal-wrap'> <div class='modal-content'></div><span class='close'></span></div>",
-		tplLoading: "<div class='modal-loading'><img src='../img/loading.gif'></div>",
-		settings: {
-			onResize: true
-		}
-
-	};
-
-	asyncatchDom = function asyncatchDom() {
-
-		dom.btnClose = $(st.btnClose);
-		dom.content = $(st.content);
-		dom.parent = $(st.parent);
-		dom.overlay = $(st.overlay);
-		dom.modalLoading = $(st.modalLoading);
-	};
-
-	asynSuscribeEvents = function asynSuscribeEvents() {
-		dom.btnClose.on("click", events.close);
-		dom.overlay.on("click", events.close);
-	};
-
-	events = {
-		openModal: function openModal(e) {
-			fn.open(opts);
-		},
-		close: function close() {
-			fn.close(st.settings.afterClose);
-		}
-	};
-
-	fn = {
-		open: function open() {
-			var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-
-			st.settings = $.extend({}, defaults.settings, opts);
-			fn.beforeShow();
-			fn.showModal();
-			dom.content.append(st.settings.html);
-			fn.afterShow();
-			fn.modalCss();
-			st.settings.onResize ? fn.onResize() : '';
-		},
-		beforeShow: function beforeShow() {
-
-			$.type(st.settings.beforeShow) === "function" ? st.settings.beforeShow() : '';
-		},
-		afterShow: function afterShow() {
-
-			$.type(st.settings.afterShow) === "function" ? setTimeout(st.settings.afterShow(), 1) : '';
-		},
-		showModal: function showModal() {
-
-			$(st.tplWrap).appendTo("body");
-			asyncatchDom();
-			asynSuscribeEvents();
-		},
-		modalCss: function modalCss() {
-			dom.parent.css({
-				position: 'fixed',
-				left: ($(window).width() - dom.parent.outerWidth()) / 2,
-				top: ($(window).height() - dom.parent.outerHeight()) / 2
-			});
-			st.settings.locked == true ? $("body").addClass("locked") : '';
-		},
-		close: function close(callback) {
-
-			dom.parent.remove();
-			dom.overlay.remove();
-			$("body").removeClass("locked");
-			$.type(callback) === "function" ? setTimeout(callback, 1) : '';
-		},
-		onResize: function onResize() {
-
-			$(window).resize(function () {
-				dom.parent.css({
-					position: 'fixed',
-					left: ($(window).width() - dom.parent.outerWidth()) / 2,
-					top: ($(window).height() - dom.parent.outerHeight()) / 2
-				});
-			});
-			$(window).trigger("resize");
-		},
-		showLoading: function showLoading() {
-			$(st.tplLoading).appendTo("body");
-		},
-		hideLoading: function hideLoading() {
-			$(".modal-loading").remove();
-		}
-	};
-
-	initialize = function initialize(oP) {
-
-		st = $.extend({}, defaults, oP);
-		Sb.events(["modal:open"], fn.open, undefined);
-		Sb.events(["modal:onResize"], fn.onResize, undefined);
-		Sb.events(["modal:showLoading"], fn.showLoading, undefined);
-		Sb.events(["modal:hideLoading"], fn.hideLoading, undefined);
-	};
 	return {
 		init: initialize
 	};

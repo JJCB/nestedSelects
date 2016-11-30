@@ -34,7 +34,7 @@
       tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
       quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
       consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-      <br><a data-link-modal="#tplComboAnidado" class="fancybox open_modal">Abrir modal</a> <br>
+      <br><a data-link-modal="#viewModalExample" class="fancybox open_modal">Abrir modal</a> <br>
       cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
       proident, sunt in culpa qui officia deserunt mollit anim id est laborum.| Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
       tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
@@ -139,6 +139,7 @@
     <script src="bower_components/fancybox/source/jquery.fancybox.js"></script>
     <script>var yOSON = {module: "home",controller: "combo_anidado",action: "index" };</script>
     <script src="bower_components/yosonjs/build/yoson-min.js"></script>
+    <script src="js/home/combo_anidado/modal.js"></script>
     <script src="js/home/combo_anidado/combo.js"></script>
     <script src="js/schema.js"></script>
     <script src="js/loader.js"></script>
@@ -176,6 +177,7 @@
     </div>
   </div>
 </script>
+<script type="text/template" id="viewModalExample"><img src="http://local.neoauto3.com/neoauto3/public/static/neoauto3/img/publicacion/all/paso1/examples/premium.png"></script>
 <script type="text/template" id="tplListSlc">
   <option value="Seleccion" selected disabled>Selecciona</option>{{ for(i=0;i<data.length;i++){ }}
   {{ if(id == data[i].id_ubigeo) { }}

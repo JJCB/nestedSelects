@@ -1,15 +1,15 @@
 yOSON.AppCore.addModule("modal", (Sb) => {
 	
 	let st			= {},
-	 defaults		= {},
-	 dom				= {},      
-	 events,
-	 fn,
-	 catchDom,
-	 suscribeEvents,
-	 asyncatchDom,
-	 asynSuscribeEvents,
-	 initialize;
+	defaults		= {},
+	dom				= {},      
+	events,
+	fn,
+	catchDom,
+	suscribeEvents,
+	asyncatchDom,
+	asynSuscribeEvents,
+	initialize;
 
 	defaults = {
 		parent				: ".modal-overlay",
@@ -20,11 +20,11 @@ yOSON.AppCore.addModule("modal", (Sb) => {
 		tplWrap 			: "<div class='modal-overlay'><div class='modalClose'>X Cerrar</div><div class='modal-wrap'> <div class='modal-content'></div><span class='modalClose'></span></div></div>",
 		tplLoading 		: "<div class='modal-loading'><img src='../../neoauto3/public/static/neoauto3/img/plugins/fancybox/fancybox_loading@2x.gif'></div>",
 		settings    	: {
-				cssWrap			: {
-					padding 		: "20px",
-				},
-				cssContent 	: {},
-				onResize		: true
+			cssWrap			: {
+				padding 		: "20px",
+			},
+			cssContent 	: {},
+			onResize		: true
 		}
 	}
 	
@@ -45,7 +45,7 @@ yOSON.AppCore.addModule("modal", (Sb) => {
 	events = {
 
 		openModal (e) {
-			fn.open();
+			fn.openNew();
 		},
 
 		close (e) {
@@ -58,19 +58,29 @@ yOSON.AppCore.addModule("modal", (Sb) => {
 
 	
 	fn = {
+		openNew(opts = {}) {
+			st.settings = $.extend({}, defaults.settings, opts);
+
+			new Image().src = "http://www.construyehogar.com/wp-content/uploads/2015/06/Dise%C3%B1o-de-casa-moderna-de-dos-plantas.jpg";
+			new Image().src = "http://1.bp.blogspot.com/-9O6l6K9RfKs/VbHLGfeuglI/AAAAAAAABKE/RYyY-1EOlMI/s640/FACHADAS%2BDE%2BCASAS%2BDE%2BCAMPO%2B3.jpg";
+			
+			var view = new Image();
+			
+			console.log("valor : ", view.complete)
+
+		},
 		
 		open (opts = {}) {
 
 			st.settings = $.extend({}, defaults.settings, opts);
-		
 			fn.showLoading();
 			fn._loadModal();
-
+			
 			if(st.settings.beforeShow && typeof st.settings.beforeShow === "function") {
-					fn._beforeShow();
+				fn._beforeShow();
 			}
 			else{
-					fn._addHtmlModal();
+				fn._addHtmlModal();
 			}
 		},	
 
@@ -80,9 +90,10 @@ yOSON.AppCore.addModule("modal", (Sb) => {
 
 			fn._setCss();
 
-			if(st.settings.beforeShow && typeof st.settings.afterShow === "function"){
+			if(st.settings.afterShow && typeof st.settings.afterShow === "function"){
 				fn._afterShow();
 			}
+			fn._onResize();
 		},
 
 		_beforeShow () {
@@ -93,7 +104,7 @@ yOSON.AppCore.addModule("modal", (Sb) => {
 
 		_afterShow () {
 
-				setTimeout(st.settings.afterShow(),1)
+			setTimeout(st.settings.afterShow(),1)
 		},
 
 		_loadModal () {
@@ -110,38 +121,38 @@ yOSON.AppCore.addModule("modal", (Sb) => {
 				$("body").addClass("locked")
 				$("html").addClass("locked-html")
 			}
+			dom.wrap.css({
 
-		/*	dom.wrap.css({
-
-						left: ($(window).width() - dom.content.children().outerWidth())/2,
-						top: ($(window).height() - dom.content.children().outerHeight())/2
+				left: ($(window).width() - dom.wrap.outerWidth())/2,
+				top: ($(window).height() - dom.wrap.outerHeight())/2
 			})
-			*/
-			dom.wrap.css(st.settings.cssWrap || {});
-			dom.content.css(st.settings.cssContent || {});
+			
 			dom.wrap.addClass("active");
 			fn.hideLoading();
-		},
 
-		_onResize () {
+		//	dom.parent.css(st.settings.css || {})
 
-			$(window).resize(()=>{
-					dom.wrap.css({
-						left: ($(window).width() - dom.content.children().outerWidth())/2,
-						top: ($(window).height() - dom.content.children().outerWidth())/2
-				})
-			});
-			setTimeout(function(){$(window).trigger("resize")},2);
-		},
+	},
 
-		updateSize () {
+	_onResize () {
 
-			fn._onResize();
-		},
-		
-		close (callback) {
+		$(window).resize(()=>{
+			dom.wrap.css({
+				left: ($(window).width() - dom.wrap.outerWidth())/2,
+				top: ($(window).height() - dom.wrap.outerHeight())/2
+			})
+		});
+		setTimeout(function(){$(window).trigger("resize")},2);
+	},
 
-			dom.parent.remove();
+	updateSize () {
+
+		fn._onResize();
+	},
+
+	close (callback) {
+
+		dom.parent.remove();
 			//dom.overlay.remove();
 
 			$("body").removeClass("locked");
